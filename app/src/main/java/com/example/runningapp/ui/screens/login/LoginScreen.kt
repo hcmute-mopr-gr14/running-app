@@ -60,9 +60,9 @@ fun LoginScreen(
                 fontWeight = FontWeight.Bold
             )
             TextField(
-                value = viewModel.username,
-                onValueChange = { value -> viewModel.username = value },
-                label = { Text(stringResource(id = R.string.login_username_label)) },
+                value = viewModel.email,
+                onValueChange = { value -> viewModel.email = value },
+                label = { Text(stringResource(id = R.string.login_email_label)) },
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
@@ -113,7 +113,7 @@ fun LoginScreen(
                 }
             }
             Button(
-                onClick = {},
+                onClick = { viewModel.login() },
                 contentPadding = PaddingValues(0.dp, 14.dp),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth()
