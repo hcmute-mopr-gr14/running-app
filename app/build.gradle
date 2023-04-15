@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 android {
@@ -22,6 +23,10 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/*'
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -39,7 +44,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.4'
+        kotlinCompilerExtensionVersion '1.4.5'
     }
     packagingOptions {
         resources {
@@ -66,6 +71,14 @@ dependencies {
     implementation 'com.google.dagger:hilt-android:2.45'
     kapt 'com.google.dagger:hilt-android-compiler:2.45'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
+
+    implementation "io.ktor:ktor-client-core:$ktor_version"
+    implementation "io.ktor:ktor-client-android:$ktor_version"
+    implementation "io.ktor:ktor-client-serialization:$ktor_version"
+    implementation "io.ktor:ktor-client-logging:$ktor_version"
+    implementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
+    implementation "io.ktor:ktor-client-content-negotiation:$ktor_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
 }
 
 kapt {
