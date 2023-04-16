@@ -22,7 +22,6 @@ class LoginViewModel @Inject constructor(private val userRepository: UserReposit
             val response = userRepository.login(LoginRequest(email, password))
             println(response?.apiVersion)
             println(response?.data)
-            userRepository.login(LoginRequest("", "")).awa
         }
     }
 }

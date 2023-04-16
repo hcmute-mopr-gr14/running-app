@@ -54,10 +54,4 @@ internal object AppModule {
     fun provideUserRepository(client: HttpClient): UserRepository {
         return ApiUserRepository(client)
     }
-
-    @Singleton
-    @Binds
-    fun providerUserRepository(apiUserRepository: ApiUserRepository) : UserRepository {
-        return apiUserRepository
-    }
 }
