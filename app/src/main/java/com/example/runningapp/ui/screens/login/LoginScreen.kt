@@ -2,13 +2,17 @@ package com.example.runningapp.ui.screens.login
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +35,7 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = viewModel()
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(8.dp, 0.dp).then(modifier)) {
+    Column(modifier = Modifier.fillMaxSize().padding(8.dp, 0.dp).verticalScroll(rememberScrollState()).then(modifier)) {
         IconButton(onClick = {}) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
@@ -50,9 +54,9 @@ fun LoginScreen(
                 contentDescription = stringResource(id = R.string.login_logo_description),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .weight(1f, false)
+//                    .weight(1f, false)
                     .aspectRatio(ratio = painter.intrinsicSize.width / painter.intrinsicSize.height)
-                    .fillMaxWidth()
+                    .fillMaxHeight()
             )
             Text(
                 stringResource(R.string.login_header),
@@ -60,8 +64,8 @@ fun LoginScreen(
                 fontWeight = FontWeight.Bold
             )
             TextField(
-                value = viewModel.email,
-                onValueChange = { value -> viewModel.email = value },
+                value = viewModel.email.collectAsState().value,
+                onValueChange = { value -> viewModel.setEmail(value) },
                 label = { Text(stringResource(id = R.string.login_email_label)) },
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.textFieldColors(
@@ -72,8 +76,8 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
-                value = viewModel.password,
-                onValueChange = { value -> viewModel.password = value },
+                value = viewModel.password.collectAsState().value,
+                onValueChange = { value -> viewModel.setPassword(value) },
                 label = { Text(stringResource(id = R.string.login_password_label)) },
                 shape = RoundedCornerShape(12.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -91,9 +95,9 @@ fun LoginScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
-                        checked = viewModel.rememberMe,
+                        checked = viewModel.rememberMe.collectAsState().value,
                         onCheckedChange = { checked ->
-                            viewModel.rememberMe = checked
+                            viewModel.setRememberMe(checked)
                         }
                     )
                     Text(
