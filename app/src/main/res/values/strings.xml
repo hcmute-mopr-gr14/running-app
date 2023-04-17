@@ -6,7 +6,9 @@
     <string name="login_logo_description">App logo</string>
     <string name="login_header">Log In</string>
     <string name="login_email_label">Email</string>
+    <string name="login_email_placeholder">Enter your email</string>
     <string name="login_password_label">Password</string>
+    <string name="login_password_placeholder">Enter your password</string>
     <string name="login_remember_me">Remember me</string>
     <string name="login_forgot_password">Forgot password?</string>
     <string name="login_login_button">Log In</string>
