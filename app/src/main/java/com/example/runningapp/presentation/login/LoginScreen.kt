@@ -18,6 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -72,6 +74,7 @@ fun LoginScreen(
                     isError = uiState.emailInput.validation is Validation.Error,
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 )
             }
             ValidationSlot(validation = uiState.passwordInput.validation) {
@@ -82,6 +85,7 @@ fun LoginScreen(
                     placeholder = { Text(stringResource(id = R.string.login_password_placeholder)) },
                     shape = RoundedCornerShape(12.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    visualTransformation = PasswordVisualTransformation(),
                     isError = uiState.passwordInput.validation is Validation.Error,
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
