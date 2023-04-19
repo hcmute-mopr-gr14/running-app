@@ -28,4 +28,16 @@ class ApiUserRepository @Inject constructor(private val client: HttpClient) : Us
             }
         }
     }
+    override suspend fun signup(body: SignupRequest): ApiResponse<SignupResponseData>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                client.post(ApiRoutes.SIGN_UP) {
+                    contentType(ContentType.Application.Json)
+                    setBody(body)
+                }.body()
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
 }
