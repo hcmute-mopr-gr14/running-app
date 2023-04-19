@@ -31,7 +31,7 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = viewModel(),
 ) {
-    val state by viewModel.state.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     Column(modifier = Modifier.fillMaxSize().padding(8.dp, 0.dp).then(modifier)) {
         IconButton(onClick = {}) {
             Icon(
@@ -62,27 +62,27 @@ fun LoginScreen(
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
             )
-            ValidationSlot(validation = state.emailInput.validation) {
+            ValidationSlot(validation = uiState.emailInput.validation) {
                 OutlinedTextField(
-                    value = state.emailInput.value,
+                    value = uiState.emailInput.value,
                     onValueChange = { value -> viewModel.setEmail(value) },
                     label = { Text(stringResource(id = R.string.login_email_label)) },
                     placeholder = { Text(stringResource(id = R.string.login_email_placeholder)) },
                     shape = RoundedCornerShape(12.dp),
-                    isError = state.emailInput.validation is Validation.Error,
+                    isError = uiState.emailInput.validation is Validation.Error,
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
-            ValidationSlot(validation = state.passwordInput.validation) {
+            ValidationSlot(validation = uiState.passwordInput.validation) {
                 OutlinedTextField(
-                    value = state.passwordInput.value,
+                    value = uiState.passwordInput.value,
                     onValueChange = { value -> viewModel.setPassword(value) },
                     label = { Text(stringResource(id = R.string.login_password_label)) },
                     placeholder = { Text(stringResource(id = R.string.login_password_placeholder)) },
                     shape = RoundedCornerShape(12.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    isError = state.passwordInput.validation is Validation.Error,
+                    isError = uiState.passwordInput.validation is Validation.Error,
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -94,7 +94,7 @@ fun LoginScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
-                        checked = state.rememberMe,
+                        checked = uiState.rememberMe,
                         onCheckedChange = { checked ->
                             viewModel.setRememberMe(checked)
                         }
@@ -120,7 +120,7 @@ fun LoginScreen(
                 contentPadding = PaddingValues(0.dp, 14.dp),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
-                enabled = state.emailInput.value.isNotEmpty() && state.passwordInput.value.isNotEmpty()
+                enabled = uiState.emailInput.value.isNotEmpty() && uiState.passwordInput.value.isNotEmpty()
             ) {
                 Text(text = stringResource(R.string.login_login_button))
             }

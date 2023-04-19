@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class LoginScreenState(
+data class LoginScreenUiState(
     val emailInput: ValidationInput = ValidationInput(),
     val passwordInput: ValidationInput = ValidationInput(),
     val rememberMe: Boolean = false,
@@ -20,34 +20,34 @@ data class LoginScreenState(
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase) : ViewModel() {
-    private val _state = MutableStateFlow(LoginScreenState())
-    val state = _state.asStateFlow()
+    private val _uiState = MutableStateFlow(LoginScreenUiState())
+    val uiState = _uiState.asStateFlow()
 
     fun setEmail(value: String) {
-        _state.update { it.copy(emailInput = it.emailInput.copy(value = value)) }
+        _uiState.update { it.copy(emailInput = it.emailInput.copy(value = value)) }
     }
 
     fun setPassword(value: String) {
-        _state.update { it.copy(passwordInput = it.passwordInput.copy(value = value)) }
+        _uiState.update { it.copy(passwordInput = it.passwordInput.copy(value = value)) }
     }
 
     fun setRememberMe(rememberMe: Boolean) {
-        _state.update { _state.value.copy(rememberMe = rememberMe) }
+        _uiState.update { _uiState.value.copy(rememberMe = rememberMe) }
     }
 
     fun login() {
-        _state.update { it.copy(emailInput = it.emailInput.copy(validation = loginUseCase.validateEmail(it.emailInput.value))) }
-        if (_state.value.emailInput.validation is Validation.Error) {
+        _uiState.update { it.copy(emailInput = it.emailInput.copy(validation = loginUseCase.validateEmail(it.emailInput.value))) }
+        if (_uiState.value.emailInput.validation is Validation.Error) {
             return
         }
 
-        _state.update { it.copy(passwordInput = it.passwordInput.copy(validation = loginUseCase.validatePassword(it.passwordInput.value))) }
-        if (_state.value.passwordInput.validation is Validation.Error) {
+        _uiState.update { it.copy(passwordInput = it.passwordInput.copy(validation = loginUseCase.validatePassword(it.passwordInput.value))) }
+        if (_uiState.value.passwordInput.validation is Validation.Error) {
             return
         }
 
         viewModelScope.launch {
-            val response = loginUseCase.login(email = _state.value.emailInput.value, password = _state.value.passwordInput.value)
+            val response = loginUseCase.login(email = _uiState.value.emailInput.value, password = _uiState.value.passwordInput.value)
             println(response?.apiVersion)
             println(response?.data)
         }
