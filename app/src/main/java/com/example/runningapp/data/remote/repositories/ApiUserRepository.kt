@@ -15,10 +15,10 @@ import javax.inject.Singleton
 
 @Singleton
 class ApiUserRepository @Inject constructor(private val client: HttpClient) : UserRepository {
-    override suspend fun login(body: LoginRequest): ApiResponse<LoginResponseData>? {
+    override suspend fun login(body: LoginRequestDTO): ApiResponse<LoginResponseDataDTO>? {
         return withContext(Dispatchers.IO) {
             try {
-               val dto: ApiResponseDTO<LoginResponseData> = client.post(ApiRoutes.LOGIN) {
+               val dto: ApiResponseDTO<LoginResponseDataDTO> = client.post(ApiRoutes.LOGIN) {
                     contentType(ContentType.Application.Json)
                     setBody(body)
                 }.body()
