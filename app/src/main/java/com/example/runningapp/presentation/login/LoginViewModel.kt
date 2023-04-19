@@ -2,6 +2,7 @@ package com.example.runningapp.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.runningapp.data.remote.dto.ApiResponse
 import com.example.runningapp.domain.models.ValidationInput
 import com.example.runningapp.domain.models.Validation
 import com.example.runningapp.domain.use_cases.LoginUseCase
@@ -47,9 +48,19 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
         }
 
         viewModelScope.launch {
-            val response = loginUseCase.login(email = _uiState.value.emailInput.value, password = _uiState.value.passwordInput.value)
-            println(response?.apiVersion)
-            println(response?.data)
+            when(val response = loginUseCase.login(email = _uiState.value.emailInput.value, password = _uiState.value.passwordInput.value)) {
+                is ApiResponse.Data -> {
+                    println("data")
+                    println(response)
+                }
+                is ApiResponse.Error -> {
+                    println("error")
+                    println(response)
+                }
+                else -> {
+                    println("wtf")
+                }
+            }
         }
     }
 }

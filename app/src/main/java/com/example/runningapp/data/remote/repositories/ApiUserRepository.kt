@@ -2,6 +2,7 @@ package com.example.runningapp.data.remote.repositories
 
 import com.example.runningapp.data.remote.ApiRoutes
 import com.example.runningapp.data.remote.dto.ApiResponse
+import com.example.runningapp.data.remote.dto.ApiResponseDTO
 import com.example.runningapp.data.remote.dto.user.*
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -17,10 +18,11 @@ class ApiUserRepository @Inject constructor(private val client: HttpClient) : Us
     override suspend fun login(body: LoginRequest): ApiResponse<LoginResponseData>? {
         return withContext(Dispatchers.IO) {
             try {
-                client.post(ApiRoutes.LOGIN) {
+               val dto: ApiResponseDTO<LoginResponseData> = client.post(ApiRoutes.LOGIN) {
                     contentType(ContentType.Application.Json)
                     setBody(body)
                 }.body()
+                dto.toApiResponse()
             } catch (e: Exception) {
                 null
             }
