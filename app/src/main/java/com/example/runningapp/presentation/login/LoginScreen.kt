@@ -7,10 +7,14 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -20,19 +24,41 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.runningapp.R
 import com.example.runningapp.domain.models.Validation
 import com.example.runningapp.ui.composables.ValidationSlot
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
+    val uiState by viewModel.uiState.collectAsState(LoginScreenUiState())
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+
+    LaunchedEffect(key1 = Unit) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is LoginScreenUiEvent.LoginSuccess -> {
+                        // TODO: navigate to somewhere
+                    }
+
+                    is LoginScreenUiEvent.LoginFailure -> {
+                        snackbarHostState.showSnackbar(
+                            message = "${event.error.code}: ${event.error.message}.",
+                            withDismissAction = true,
+                            duration = SnackbarDuration.Short
+                        );
+                    }
+                }
+            }
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize().padding(8.dp, 0.dp).then(modifier)) {
         IconButton(onClick = {}) {
@@ -120,14 +146,7 @@ fun LoginScreen(
                 }
             }
             Button(
-                onClick = {
-                    coroutineScope.launch {
-                        val ok = viewModel.login().await()
-                        if (ok) {
-                            // TODO: navigate
-                        }
-                    }
-                },
+                onClick = { viewModel.login() },
                 contentPadding = PaddingValues(0.dp, 14.dp),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
