@@ -28,7 +28,6 @@ class ApiUserRepository @Inject constructor(private val client: HttpClient) : Us
             }
         }
     }
-<<<<<<< HEAD
     override suspend fun signup(body: SignupRequestDTO): ApiResponse<SignupResponseDataDTO>? {
         return withContext(Dispatchers.IO) {
             try {
@@ -37,15 +36,6 @@ class ApiUserRepository @Inject constructor(private val client: HttpClient) : Us
                     setBody(body)
                 }.body()
                 dto.toApiResponse()
-=======
-    override suspend fun signup(body: SignupRequest): ApiResponse<SignupResponseData>? {
-        return withContext(Dispatchers.IO) {
-            try {
-                client.post(ApiRoutes.SIGN_UP) {
-                    contentType(ContentType.Application.Json)
-                    setBody(body)
-                }.body()
->>>>>>> 14787a1 (add signup usecase)
             } catch (e: Exception) {
                 null
             }
