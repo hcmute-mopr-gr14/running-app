@@ -13,13 +13,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.runningapp.ui.theme.RunningAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            RunningAppTheme(darkTheme = true) {
+            RunningAppTheme(darkTheme = false) {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     val navController = rememberNavController()
                     val snackbarHostState = remember { SnackbarHostState() }
