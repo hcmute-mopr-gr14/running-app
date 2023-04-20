@@ -2,6 +2,7 @@ package com.example.runningapp.presentation.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.runningapp.data.remote.dto.ApiResponse
 import com.example.runningapp.domain.models.Validation
 import com.example.runningapp.domain.models.ValidationInput
 import com.example.runningapp.domain.use_cases.SignupUseCase
@@ -15,45 +16,55 @@ import javax.inject.Inject
 data class SignupScreenState(
     val emailInput: ValidationInput = ValidationInput(),
     val passwordInput: ValidationInput = ValidationInput(),
-    val confirmpasswordInput: ValidationInput = ValidationInput(),
+    val confirm_passwordInput: ValidationInput = ValidationInput(),
 )
 @HiltViewModel
 class SignupViewModel @Inject constructor(private val signupUseCase: SignupUseCase) : ViewModel(){
-    private val _state = MutableStateFlow(SignupScreenState())
-    val state = _state.asStateFlow()
+    private val _uiState = MutableStateFlow(SignupScreenState())
+    val uiState = _uiState.asStateFlow()
 
     fun setEmail(value: String) {
-        _state.update { it.copy(emailInput = it.emailInput.copy(value = value)) }
+        _uiState.update { it.copy(emailInput = it.emailInput.copy(value = value)) }
     }
 
     fun setPassword(value: String) {
-        _state.update { it.copy(passwordInput = it.passwordInput.copy(value = value)) }
+        _uiState.update { it.copy(passwordInput = it.passwordInput.copy(value = value)) }
     }
 
     fun setConfirmpassword(value: String) {
-        _state.update { it.copy(confirmpasswordInput = it.confirmpasswordInput.copy(value = value)) }
+        _uiState.update { it.copy(confirm_passwordInput = it.confirm_passwordInput.copy(value = value)) }
     }
 
     fun signup() {
-        _state.update { it.copy(emailInput = it.emailInput.copy(validation = signupUseCase.validateEmail(it.emailInput.value))) }
-        if (_state.value.emailInput.validation is Validation.Error) {
+        _uiState.update { it.copy(emailInput = it.emailInput.copy(validation = signupUseCase.validateEmail(it.emailInput.value))) }
+        if (_uiState.value.emailInput.validation is Validation.Error) {
             return
         }
 
-        _state.update { it.copy(passwordInput = it.passwordInput.copy(validation = signupUseCase.validatePassword(it.passwordInput.value))) }
-        if (_state.value.passwordInput.validation is Validation.Error) {
+        _uiState.update { it.copy(passwordInput = it.passwordInput.copy(validation = signupUseCase.validatePassword(it.passwordInput.value))) }
+        if (_uiState.value.passwordInput.validation is Validation.Error) {
             return
         }
 
-        _state.update { it.copy(confirmpasswordInput = it.confirmpasswordInput.copy(validation = signupUseCase.validateConfirmpassword(it.confirmpasswordInput.value, it.passwordInput.value))) }
-        if (_state.value.confirmpasswordInput.validation is Validation.Error) {
+        _uiState.update { it.copy(confirm_passwordInput = it.confirm_passwordInput.copy(validation = signupUseCase.validateConfirmpassword(it.confirm_passwordInput.value, it.passwordInput.value))) }
+        if (_uiState.value.confirm_passwordInput.validation is Validation.Error) {
             return
         }
 
         viewModelScope.launch {
-            val response = signupUseCase.signup(email = _state.value.emailInput.value, password = _state.value.passwordInput.value, confirmpassword = _state.value.confirmpasswordInput.value)
-            println(response?.apiVersion)
-            println(response?.data)
+            when(val response = signupUseCase.signup(email = _uiState.value.emailInput.value, password = _uiState.value.passwordInput.value)) {
+                is ApiResponse.Data -> {
+                    println("data")
+                    println(response)
+                }
+                is ApiResponse.Error -> {
+                    println("error")
+                    println(response)
+                }
+                else -> {
+                    println("wtf")
+                }
+            }
         }
     }
 }

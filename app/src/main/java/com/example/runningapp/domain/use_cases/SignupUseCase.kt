@@ -2,10 +2,8 @@ package com.example.runningapp.domain.use_cases
 
 import android.util.Patterns
 import com.example.runningapp.data.remote.dto.ApiResponse
-import com.example.runningapp.data.remote.dto.user.LoginRequest
-import com.example.runningapp.data.remote.dto.user.LoginResponseData
-import com.example.runningapp.data.remote.dto.user.SignupRequest
-import com.example.runningapp.data.remote.dto.user.SignupResponseData
+import com.example.runningapp.data.remote.dto.user.SignupRequestDTO
+import com.example.runningapp.data.remote.dto.user.SignupResponseDataDTO
 import com.example.runningapp.data.remote.repositories.UserRepository
 import com.example.runningapp.domain.models.Validation
 import java.util.regex.Pattern
@@ -14,8 +12,8 @@ import javax.inject.Singleton
 
 @Singleton
 class SignupUseCase @Inject constructor(private val userRepository: UserRepository) {
-    suspend fun signup(email: String, password: String, confirmpassword: String): ApiResponse<SignupResponseData>? {
-        return userRepository.signup(SignupRequest(email = email, password = password, confirmpassword = confirmpassword))
+    suspend fun signup(email: String, password: String): ApiResponse<SignupResponseDataDTO>? {
+        return userRepository.signup(SignupRequestDTO(email = email, password = password))
     }
 
     fun validateEmail(email: String): Validation {
@@ -53,8 +51,8 @@ class SignupUseCase @Inject constructor(private val userRepository: UserReposito
         return Validation.Success
     }
 
-    fun validateConfirmpassword(confirmpassword: String, password: String): Validation {
-        if (confirmpassword != password) {
+    fun validateConfirmpassword(confirm_password: String, password: String): Validation {
+        if (confirm_password != password) {
             return Validation.Error(message = "Xác nhận mật khẩu không khớp")
         }
         return Validation.Success

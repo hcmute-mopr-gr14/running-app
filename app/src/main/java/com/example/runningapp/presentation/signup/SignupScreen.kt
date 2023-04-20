@@ -40,7 +40,7 @@ fun SignupScreen(
 ) {
     var isPasswordOpen by remember { mutableStateOf(false) }
     var isConfirmPasswordOpen by remember { mutableStateOf(false) }
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.uiState.collectAsState()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize().padding(8.dp, 0.dp).then(modifier)
@@ -154,14 +154,14 @@ fun SignupScreen(
                     }
                 )
             }
-            ValidationSlot(validation = state.confirmpasswordInput.validation) {
+            ValidationSlot(validation = state.confirm_passwordInput.validation) {
                 OutlinedTextField(
-                    value = state.confirmpasswordInput.value,
+                    value = state.confirm_passwordInput.value,
                     onValueChange = { value -> viewModel.setConfirmpassword(value) },
                     label = { Text(stringResource(id = R.string.signup_confirmpassword_label), color = Color.Gray) },
                     shape = RoundedCornerShape(12.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    isError = state.confirmpasswordInput.validation is Validation.Error,
+                    isError = state.confirm_passwordInput.validation is Validation.Error,
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     leadingIcon = {
