@@ -2,14 +2,16 @@ package com.example.runningapp.presentation.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.runningapp.data.remote.dto.ApiError
 import com.example.runningapp.data.remote.dto.ApiResponse
+import com.example.runningapp.data.remote.dto.user.SignupResponseDataDTO
 import com.example.runningapp.domain.models.Validation
 import com.example.runningapp.domain.models.ValidationInput
 import com.example.runningapp.domain.use_cases.SignupUseCase
+import com.example.runningapp.presentation.login.LoginScreenUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,10 +20,18 @@ data class SignupScreenState(
     val passwordInput: ValidationInput = ValidationInput(),
     val confirm_passwordInput: ValidationInput = ValidationInput(),
 )
+
+sealed class SignupScreenUiEvent() {
+    object SignupSuccess : SignupScreenUiEvent()
+    data class SignupFailure(val error: ApiError) : SignupScreenUiEvent()
+}
 @HiltViewModel
 class SignupViewModel @Inject constructor(private val signupUseCase: SignupUseCase) : ViewModel(){
     private val _uiState = MutableStateFlow(SignupScreenState())
+    private val _uiEvent = Channel<SignupScreenUiEvent>()
+
     val uiState = _uiState.asStateFlow()
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     fun setEmail(value: String) {
         _uiState.update { it.copy(emailInput = it.emailInput.copy(value = value)) }
@@ -52,17 +62,24 @@ class SignupViewModel @Inject constructor(private val signupUseCase: SignupUseCa
         }
 
         viewModelScope.launch {
-            when(val response = signupUseCase.signup(email = _uiState.value.emailInput.value, password = _uiState.value.passwordInput.value)) {
+            when (val response = signupUseCase.signup(
+                email = _uiState.value.emailInput.value,
+                password = _uiState.value.passwordInput.value
+            )) {
                 is ApiResponse.Data -> {
-                    println("data")
-                    println(response)
+                    _uiEvent.send(SignupScreenUiEvent.SignupSuccess)
                 }
+
                 is ApiResponse.Error -> {
-                    println("error")
-                    println(response)
+                    _uiEvent.send(SignupScreenUiEvent.SignupFailure(response.error))
                 }
+
                 else -> {
-                    println("wtf")
+                    _uiEvent.send(
+                        SignupScreenUiEvent.SignupFailure(
+                            ApiError(code = 1, message = "Request failed")
+                        )
+                    )
                 }
             }
         }
