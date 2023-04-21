@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SignupResponseDataDTO (
-    val dummy: String
+    val message: String
 )

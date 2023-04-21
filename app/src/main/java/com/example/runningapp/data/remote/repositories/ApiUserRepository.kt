@@ -31,10 +31,11 @@ class ApiUserRepository @Inject constructor(private val client: HttpClient) : Us
     override suspend fun signup(body: SignupRequestDTO): ApiResponse<SignupResponseDataDTO>? {
         return withContext(Dispatchers.IO) {
             try {
-                client.post(ApiRoutes.SIGN_UP) {
+                val dto: ApiResponseDTO<SignupResponseDataDTO> = client.post(ApiRoutes.SIGN_UP) {
                     contentType(ContentType.Application.Json)
                     setBody(body)
                 }.body()
+                dto.toApiResponse()
             } catch (e: Exception) {
                 null
             }
