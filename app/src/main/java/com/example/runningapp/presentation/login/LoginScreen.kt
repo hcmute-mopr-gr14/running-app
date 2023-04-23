@@ -1,5 +1,6 @@
 package com.example.runningapp.presentation.login
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -29,8 +31,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.runningapp.R
 import com.example.runningapp.domain.models.Validation
 import com.example.runningapp.ui.composables.ValidationSlot
+import com.example.runningapp.ui.theme.RunningAppTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     snackbarHostState: SnackbarHostState,
@@ -39,7 +41,6 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState(LoginScreenUiState())
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-
     LaunchedEffect(key1 = Unit) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.uiEvent.collect { event ->
@@ -53,12 +54,31 @@ fun LoginScreen(
                             message = "${event.error.code}: ${event.error.message}.",
                             withDismissAction = true,
                             duration = SnackbarDuration.Short
-                        );
+                        )
                     }
                 }
             }
         }
     }
+    LoginScreen(
+        uiState = uiState,
+        onEmailChange = { value -> viewModel.setEmail(value) },
+        onPasswordChange = { value -> viewModel.setPassword(value) },
+        onRememberMeChange = { value -> viewModel.setRememberMe(value) },
+        onSubmit = { viewModel.login() },
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun LoginScreen(
+    uiState: LoginScreenUiState,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onRememberMeChange: (Boolean) -> Unit,
+    onSubmit: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
 
     Column(modifier = Modifier.fillMaxSize().padding(8.dp, 0.dp).then(modifier)) {
         IconButton(onClick = {}) {
@@ -93,7 +113,7 @@ fun LoginScreen(
             ValidationSlot(validation = uiState.emailInput.validation) {
                 OutlinedTextField(
                     value = uiState.emailInput.value,
-                    onValueChange = { value -> viewModel.setEmail(value) },
+                    onValueChange = onEmailChange,
                     label = { Text(stringResource(id = R.string.login_email_label)) },
                     placeholder = { Text(stringResource(id = R.string.login_email_placeholder)) },
                     shape = RoundedCornerShape(12.dp),
@@ -106,7 +126,7 @@ fun LoginScreen(
             ValidationSlot(validation = uiState.passwordInput.validation) {
                 OutlinedTextField(
                     value = uiState.passwordInput.value,
-                    onValueChange = { value -> viewModel.setPassword(value) },
+                    onValueChange = onPasswordChange,
                     label = { Text(stringResource(id = R.string.login_password_label)) },
                     placeholder = { Text(stringResource(id = R.string.login_password_placeholder)) },
                     shape = RoundedCornerShape(12.dp),
@@ -125,9 +145,7 @@ fun LoginScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         checked = uiState.rememberMe,
-                        onCheckedChange = { checked ->
-                            viewModel.setRememberMe(checked)
-                        }
+                        onCheckedChange = onRememberMeChange,
                     )
                     Text(
                         text = stringResource(id = R.string.login_remember_me),
@@ -146,7 +164,7 @@ fun LoginScreen(
                 }
             }
             Button(
-                onClick = { viewModel.login() },
+                onClick = onSubmit,
                 contentPadding = PaddingValues(0.dp, 14.dp),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
@@ -160,6 +178,21 @@ fun LoginScreen(
                     Text(text = stringResource(R.string.login_sign_up), color = MaterialTheme.colorScheme.primary)
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun LoginScreenPreview() {
+    RunningAppTheme() {
+        Surface {
+            LoginScreen(
+                uiState = LoginScreenUiState(),
+                onEmailChange = {},
+                onPasswordChange = {},
+                onRememberMeChange = {},
+                onSubmit = {})
         }
     }
 }
