@@ -51,7 +51,7 @@ fun LoginScreen(
 
                     is LoginScreenUiEvent.LoginFailure -> {
                         snackbarHostState.showSnackbar(
-                            message = "${event.error.code}: ${event.error.message}.",
+                            message = event.error.message,
                             withDismissAction = true,
                             duration = SnackbarDuration.Short
                         )

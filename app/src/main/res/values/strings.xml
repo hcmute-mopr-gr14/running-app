@@ -14,5 +14,7 @@
     <string name="login_login_button">Log In</string>
     <string name="login_new_user">New user?</string>
     <string name="login_sign_up">Sign up</string>
+    <string name="login_email_not_found">Email or password is not correct</string>
+    <string name="login_wrong_password">Email or password is not correct</string>
     <!-- login screen end -->
 </resources>

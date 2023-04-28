@@ -1,7 +1,11 @@
 package com.example.runningapp.presentation.login
 
+import android.app.Application
+import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.runningapp.R
 import com.example.runningapp.data.remote.dto.ApiError
 import com.example.runningapp.data.remote.dto.ApiResponse
 import com.example.runningapp.domain.models.ValidationInput
@@ -25,7 +29,7 @@ sealed class LoginScreenUiEvent() {
 }
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase) : ViewModel() {
+class LoginViewModel @Inject constructor(private val application: Application, private val loginUseCase: LoginUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginScreenUiState())
     private val _uiEvent = Channel<LoginScreenUiEvent>()
 
@@ -65,13 +69,18 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
                 }
 
                 is ApiResponse.Error -> {
-                    _uiEvent.send(LoginScreenUiEvent.LoginFailure(response.error))
+                    val message = when(response.error.code) {
+                        "EMAIL_NOT_FOUND_ERROR" -> application.getString(R.string.login_email_not_found)
+                        "WRONG_PASSWORD_ERROR" -> application.getString(R.string.login_wrong_password)
+                        else -> ""
+                    }
+                    _uiEvent.send(LoginScreenUiEvent.LoginFailure(response.error.copy(message = message)))
                 }
 
                 else -> {
                     _uiEvent.send(
                         LoginScreenUiEvent.LoginFailure(
-                            ApiError(code = 1, message = "Request failed")
+                            ApiError(code = "EXCEPTION", message = "Request failed")
                         )
                     )
                 }
