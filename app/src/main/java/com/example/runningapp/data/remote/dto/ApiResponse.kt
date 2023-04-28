@@ -22,13 +22,13 @@ data class ApiResponseDTO<out T: Any>(
         if (error != null) {
             return ApiResponse.Error(apiVersion = this.apiVersion, error = this.error)
         }
-        return ApiResponse.Error(apiVersion = this.apiVersion, error = ApiError(code = 1, message = "JSON conversion failed"))
+        return ApiResponse.Error(apiVersion = this.apiVersion, error = ApiError(code = "EXCEPTION", message = "JSON conversion failed"))
     }
 }
 
 @Serializable
 data class ApiError(
-    val code: Int,
+    val code: String,
     val message: String
 )
 
