@@ -1,6 +1,7 @@
 package com.example.runningapp.presentation.home
 
 import android.os.Build
+import android.text.format.DateUtils.formatDateTime
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.runningapp.R
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -43,7 +45,6 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState(HomeScreenUiState())
     Scaffold(
         bottomBar = {
-            HistoryInfo()
             Box(
                 modifier = Modifier
                     .padding(horizontal = 40.dp, vertical = 10.dp)
@@ -63,8 +64,7 @@ fun HomeScreen(
                         ) {
                             Icon(
                                 imageVector = icon,
-                                contentDescription = null,
-                                tint = if (uiState.selectedIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                                contentDescription = null
                             )
                         }
                     }
@@ -91,7 +91,7 @@ fun HomeScreen(
                                     onClick = { },
                                     modifier = Modifier
                                         .clip(CircleShape)
-                                        .padding(start = 20.dp, end = 10.dp)
+                                        .padding(start = 10.dp, end = 10.dp)
                                 ) {
                                     Image(
                                         painter = painterResource(id = R.drawable.logo),
@@ -102,11 +102,11 @@ fun HomeScreen(
                                 Column() {
                                     Text(
                                         text = "HELLO!",
-                                        fontSize = 16.sp,
+                                        fontSize = 20.sp
                                     )
                                     Text(
                                         text = uiState.nickname,
-                                        fontSize = 16.sp
+                                        fontSize = 18.sp
                                     )
                                 }
                                 Spacer(modifier = Modifier.width(170.dp))
@@ -127,19 +127,20 @@ fun HomeScreen(
                                 Column() {
                                     Row() {
                                         Text(
-                                            text = "14,000",
+                                            text = uiState,
+                                            fontSize = 16.sp,
                                             modifier = Modifier.alignByBaseline()
                                         )
                                         Text(
                                             text = "/15,000",
-                                            fontSize = 18.sp,
+                                            fontSize = 20.sp,
                                             modifier = Modifier.alignByBaseline()
                                         )
                                         Text(
                                             text = " steps",
                                             modifier = Modifier.alignByBaseline()
                                         )
-                                        Spacer(modifier = Modifier.width(60.dp))
+                                        Spacer(modifier = Modifier.width(50.dp))
                                         Text(
                                             text = "Level ${uiState.level}",
                                             color = Color.Yellow
@@ -241,22 +242,32 @@ fun HomeScreen(
                                 }
                             }
                         }
-
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = "History",
                                 Modifier.padding(start = 10.dp)
                             )
                             Spacer(modifier = Modifier.width(220.dp))
-                            TextButton(onClick = { uiState.showAllHistoryInfo = true }) {
+                            TextButton(onClick = { viewModel.updateShowAllHistoryInfo(true) }) {
                                 Text(text = "See All")
                             }
                         }
+                        HistoryInfo()
                     }
-                    HistoryInfo()
                 }
-            } else {
-                HistoryInfo()
+            }
+            if (uiState.showAllHistoryInfo) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    HistoryInfo()
+                    IconButton(
+                        onClick = { viewModel.updateShowAllHistoryInfo(false) },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp)
+                    ) {
+                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
+                    }
+                }
             }
         }
     }
@@ -313,8 +324,6 @@ fun HistoryInfo(
                     .padding(horizontal = 10.dp, vertical = 10.dp)
                     .background(Color.Red, shape = RoundedCornerShape(12.dp))
             ) {
-                val formatter = DateTimeFormatter.ofPattern("dd MMMM", Locale.ENGLISH)
-                val formattedDateTime = runningLog.date.format(formatter)
                 Row(
                     Modifier
                         .fillMaxSize()
@@ -323,14 +332,15 @@ fun HistoryInfo(
                 ) {
                     Column() {
                         Text(
-                            text = formattedDateTime,
+                            text = ZonedDateTime.parse(runningLog.date)
+                                .format(DateTimeFormatter.ofPattern("dd MMMM", Locale.getDefault())),
                             color = Color.White,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "%.1f km . %.0f kcal".format(
-                                runningLog.distance,
+                            text = "%.1f km  %.0f kcal".format(
+                                runningLog.distance.toFloat(),
                                 runningLog.distance / 1.6 * 100
                             ),
                             color = Color.White,

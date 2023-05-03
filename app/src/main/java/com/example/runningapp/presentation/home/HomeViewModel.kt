@@ -69,6 +69,23 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
         }
         return level
     }
+    private fun calculateRemainingStepsAndNextMilestone(totalSteps: Int): Pair<Int, Int> {
+        val milestones = listOf(500, 1000, 2000, 4000, 8000, 16000, 32000)
+        var remainingSteps = totalSteps
+        var nextMilestone = milestones[0]
+
+        for (milestone in milestones) {
+            if (remainingSteps >= milestone) {
+                remainingSteps -= milestone
+                nextMilestone = milestone * 2
+            } else {
+                break
+            }
+        }
+
+        return Pair(remainingSteps, nextMilestone)
+    }
+
 
     fun formatDuration(seconds: Long): String {
         val hours = seconds / 3600
@@ -83,6 +100,7 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
                 is ApiResponse.Data -> {
                     val homeResponseData = response.data
                     val totalSteps = homeResponseData.runningLogs.sumOf { it.steps }
+                    val (remainingSteps, nextMilestone) = calculateRemainingStepsAndNextMilestone(totalSteps)
                     val level = calculateLevel(totalSteps)
 
                     _uiState.update { uiState ->
