@@ -41,4 +41,18 @@ class ApiUserRepository @Inject constructor(private val client: HttpClient) : Us
             }
         }
     }
+
+    override suspend fun home(): ApiResponse<HomeResponseDataDTO>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val dto: ApiResponseDTO<HomeResponseDataDTO> = client.get(ApiRoutes.HOME) {
+                    contentType(ContentType.Application.Json)
+                    setBody(body)
+                }.body()
+                dto.toApiResponse()
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
 }
