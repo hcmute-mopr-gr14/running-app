@@ -77,7 +77,7 @@ class SignupViewModel @Inject constructor(private val signupUseCase: SignupUseCa
                 else -> {
                     _uiEvent.send(
                         SignupScreenUiEvent.SignupFailure(
-                            ApiError(code = 1, message = "Request failed")
+                            ApiError(code = "EXCEPTION", message = "Request failed")
                         )
                     )
                 }
