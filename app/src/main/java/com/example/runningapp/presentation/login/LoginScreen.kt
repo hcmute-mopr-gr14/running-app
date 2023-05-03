@@ -62,10 +62,10 @@ fun LoginScreen(
     }
     LoginScreen(
         uiState = uiState,
-        onEmailChange = { value -> viewModel.setEmail(value) },
-        onPasswordChange = { value -> viewModel.setPassword(value) },
-        onRememberMeChange = { value -> viewModel.setRememberMe(value) },
-        onSubmit = { viewModel.login() },
+        onEmailChange = viewModel::setEmail,
+        onPasswordChange = viewModel::setPassword,
+        onRememberMeChange = viewModel::setRememberMe,
+        onSubmit = viewModel::login,
         modifier = modifier,
     )
 }
