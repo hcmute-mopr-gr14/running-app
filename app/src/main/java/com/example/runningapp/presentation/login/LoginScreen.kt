@@ -28,13 +28,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavHostController
 import com.example.runningapp.R
 import com.example.runningapp.domain.models.Validation
+import com.example.runningapp.presentation.Screen
 import com.example.runningapp.ui.composables.ValidationSlot
 import com.example.runningapp.ui.theme.RunningAppTheme
 
 @Composable
 fun LoginScreen(
+    navController: NavHostController,
     snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
@@ -47,6 +50,9 @@ fun LoginScreen(
                 when (event) {
                     is LoginScreenUiEvent.LoginSuccess -> {
                         // TODO: navigate to somewhere
+                        navController.navigate(route = Screen.Home.route){
+                            popUpTo(Screen.Login.route) {inclusive = true}
+                        }
                     }
 
                     is LoginScreenUiEvent.LoginFailure -> {

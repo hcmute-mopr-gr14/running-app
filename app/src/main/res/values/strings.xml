@@ -17,4 +17,12 @@
     <string name="login_email_not_found">Email or password is not correct</string>
     <string name="login_wrong_password">Email or password is not correct</string>
     <!-- login screen end -->
+    <!-- signup screen start -->
+    <string name="signup_header">ĐĂNG KÝ TÀI KHOẢN</string>
+    <string name="signup_email_label">Email</string>
+    <string name="signup_password_label">Mật khẩu</string>
+    <string name="signup_confirmpassword_label">Xác nhận mật khẩu</string>
+    <string name="signup_signup_button">ĐĂNG KÝ</string>
+    <string name="signup_backtologin_button">QUAY LẠI TRANG ĐĂNG NHẬP</string>
+    <!-- signup screen end -->
 </resources>

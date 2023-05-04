@@ -5,4 +5,6 @@ import com.example.runningapp.data.remote.dto.user.*
 
 interface UserRepository {
     suspend fun login(body: LoginRequestDTO) : ApiResponse<LoginResponseDataDTO>?
+    suspend fun signup(body: SignupRequestDTO) : ApiResponse<SignupResponseDataDTO>?
+    suspend fun home() : ApiResponse<HomeResponseDataDTO>?
 }
