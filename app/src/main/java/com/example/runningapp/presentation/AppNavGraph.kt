@@ -16,7 +16,7 @@ import com.example.runningapp.presentation.signup.SignupScreen
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavGraph(navController: NavHostController, snackbarHostState: SnackbarHostState) {
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
+    NavHost(navController = navController, startDestination = Screen.GetStarted.route) {
         composable(
             route = Screen.Login.route,
         ) {
