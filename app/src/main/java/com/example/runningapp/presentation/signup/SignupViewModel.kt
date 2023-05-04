@@ -4,14 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.runningapp.data.remote.dto.ApiError
 import com.example.runningapp.data.remote.dto.ApiResponse
-import com.example.runningapp.data.remote.dto.user.SignupResponseDataDTO
 import com.example.runningapp.domain.models.Validation
 import com.example.runningapp.domain.models.ValidationInput
 import com.example.runningapp.domain.use_cases.SignupUseCase
-import com.example.runningapp.presentation.login.LoginScreenUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

@@ -1,6 +1,5 @@
 package com.example.runningapp.presentation.signup
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -35,7 +34,6 @@ import com.example.runningapp.ui.composables.PrimaryButton
 import com.example.runningapp.ui.composables.SecondaryButton
 import com.example.runningapp.ui.composables.ValidationSlot
 
-
 @Composable
 fun SignupScreen(
     navController: NavHostController,
@@ -59,10 +57,11 @@ fun SignupScreen(
                             withDismissAction = true,
                             duration = SnackbarDuration.Short
                         )
-                        navController.navigate(route = Screen.Login.route){
-                            popUpTo(Screen.SignUp.route) {inclusive = true}
+                        navController.navigate(route = Screen.Login.route) {
+                            popUpTo(Screen.SignUp.route) { inclusive = true }
                         }
                     }
+
                     is SignupScreenUiEvent.SignupFailure -> {
                         snackbarHostState.showSnackbar(
                             message = "Email đã được sử dụng",
