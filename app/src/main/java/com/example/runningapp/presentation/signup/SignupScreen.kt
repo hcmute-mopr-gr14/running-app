@@ -270,8 +270,8 @@ fun SignupScreen(
                 )
             }
             SecondaryButton(
-                onClick = {
-                }) {
+                onClick = { navController.navigate("login") }
+            ) {
                 Text(
                     text = stringResource(R.string.signup_backtologin_button),
                     fontSize = 16.sp,
