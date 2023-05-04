@@ -5,22 +5,20 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import com.google.accompanist.pager.HorizontalPager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,15 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.runningapp.R
-import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.DelicateCoroutinesApi
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class, DelicateCoroutinesApi::class)
+@OptIn(ExperimentalFoundationApi::class, DelicateCoroutinesApi::class)
 @Composable
-fun OnBoarding(
-    navController: NavController,
-    snackbarHostState: SnackbarHostState
-) {
+fun OnBoarding(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,7 +77,7 @@ fun OnBoarding(
             items.add(
                 OnBoardingData(
                     title = stringResource(id = R.string.on_boarding_title),
-                    describe = stringResource (id = R.string.des_1)
+                    describe = stringResource(id = R.string.des_1)
                 )
             )
             items.add(
@@ -99,9 +93,6 @@ fun OnBoarding(
                 )
             )
             val pageState = rememberPagerState(
-                pageCount = items.size,
-                initialOffscreenLimit = 2,
-                infiniteLoop = false,
                 initialPage = 0
             )
             OnBoardingPager(
@@ -140,7 +131,7 @@ fun OnBoarding(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @DelicateCoroutinesApi
 @Composable
 fun OnBoardingPager(
@@ -150,7 +141,7 @@ fun OnBoardingPager(
 ) {
     Box(modifier = modifier) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            HorizontalPager(state = pagerState) { page ->
+            HorizontalPager(state = pagerState, pageCount = 3) { page ->
                 Column(
                     modifier = Modifier
                         .fillMaxSize(),
