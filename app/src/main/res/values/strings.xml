@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">RunningApp</string>
-
     <!-- login screen start -->
     <string name="login_back_description">Back</string>
     <string name="login_logo_description">App logo</string>
@@ -25,4 +24,16 @@
     <string name="signup_signup_button">ĐĂNG KÝ</string>
     <string name="signup_backtologin_button">QUAY LẠI TRANG ĐĂNG NHẬP</string>
     <!-- signup screen end -->
+    <!-- get started screen start -->
+    <string name="get_started_title">Hãy cùng khám phá với chúng tôi nhé!</string>
+    <!-- get started screen end -->
+    <!-- on boarding screen start -->
+    <string name="skip_button">Bỏ qua</string>
+    <string name="on_boarding_title">Lợi ích của chạy bộ</string>
+    <string name="des_1">Những người chạy bộ có tỷ lệ tử vong thấp hơn khoảng 25-30% so với những người không chạy bộ</string>
+    <string name="des_2">Tác dụng của chạy bộ không chỉ giúp bạn kéo dài tuổi thọ mà còn tăng năng suất làm việc, năng động và khỏe mạnh hơn</string>
+    <string name="des_3">Bài tập chạy bộ là một trong những phương pháp giảm cân hiệu quả nhờ có tác dụng đốt cháy nhiều calo</string>
+    <string name="on_boarding_question">Bạn đã có tài khoản chưa? </string>
+    <string name="on_boarding_text_button">Đăng ký</string>
+    <!-- on boarding screen end -->
 </resources>

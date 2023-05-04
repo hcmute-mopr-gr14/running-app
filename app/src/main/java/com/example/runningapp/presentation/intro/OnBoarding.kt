@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.pager.HorizontalPager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,10 +57,11 @@ fun OnBoarding(
                 )
             }
             Spacer(modifier = Modifier.width(240.dp))
-            TextButton(onClick = { navController.navigate("login") },
+            TextButton(
+                onClick = { navController.navigate("login") },
             ) {
                 Text(
-                    text = "Bỏ qua",
+                    text = stringResource(R.string.skip_button),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
@@ -80,20 +82,20 @@ fun OnBoarding(
             val items = ArrayList<OnBoardingData>()
             items.add(
                 OnBoardingData(
-                    title = "Lợi ích",
-                    describe = " Những người chạy bộ có tỷ lệ tử vong thấp hơn khoảng 25-30% so với những người không chạy bộ",
+                    title = stringResource(id = R.string.on_boarding_title),
+                    describe = stringResource (id = R.string.des_1)
                 )
             )
             items.add(
                 OnBoardingData(
-                    title = "Lợi ích",
-                    describe = "Tác dụng của chạy bộ không chỉ giúp bạn kéo dài tuổi thọ mà còn tăng năng suất làm việc, năng động và khỏe mạnh hơn."
+                    title = stringResource(id = R.string.on_boarding_title),
+                    describe = stringResource(id = R.string.des_2)
                 )
             )
             items.add(
                 OnBoardingData(
-                    title = "Lợi ích",
-                    describe = "Bài tập chạy bộ là một trong những phương pháp giảm cân hiệu quả nhờ có tác dụng đốt cháy nhiều calo."
+                    title = stringResource(id = R.string.on_boarding_title),
+                    describe = stringResource(id = R.string.des_3)
                 )
             )
             val pageState = rememberPagerState(
@@ -115,7 +117,7 @@ fun OnBoarding(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Bạn đã có tài khoản chưa? ",
+                        text = stringResource(id = R.string.on_boarding_question),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground
@@ -126,7 +128,7 @@ fun OnBoarding(
                     )
                     {
                         Text(
-                            text = "Đăng ký",
+                            text = stringResource(id = R.string.on_boarding_text_button),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
