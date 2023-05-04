@@ -154,7 +154,7 @@ fun HomeScreen(
                                             modifier = Modifier.align(Alignment.CenterVertically)
                                         )
                                     }
-                                    AccumulatedValueRainbowBar(accumulatedValue = (uiState.remainingSteps/uiState.nextMilestone).toFloat())
+                                    AccumulatedValueRainbowBar(accumulatedValue = uiState.remainingSteps.toFloat() / uiState.nextMilestone)
                                 }
                                 /*Spacer(modifier = Modifier.width(10.dp))
                                 Image(
