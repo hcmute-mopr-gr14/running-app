@@ -59,7 +59,7 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
     }
 
     private fun calculateLevel(totalSteps: Int): Int {
-        val milestones = listOf(500, 1000, 2000, 4000, 8000, 16000, 32000)
+        val milestones = listOf(500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000)
         var level = 1
 
         for (milestone in milestones) {
@@ -73,7 +73,7 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
     }
 
     private fun calculateRemainingStepsAndNextMilestone(totalSteps: Int): Pair<Int, Int> {
-        val milestones = listOf(500, 1000, 2000, 4000, 8000, 16000, 32000)
+        val milestones = listOf(500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000)
         var remainingSteps = totalSteps
         var nextMilestone = milestones[0]
 
@@ -109,7 +109,7 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
                             nickname = homeResponseData.nickname,
                             runningLogs = homeResponseData.runningLogs,
                             level = level,
-                            remainingSteps = 250,
+                            remainingSteps = remainingSteps,
                             nextMilestone = nextMilestone
                         )
                     }
