@@ -50,11 +50,6 @@ fun LoginScreen(
                 when (event) {
                     is LoginScreenUiEvent.LoginSuccess -> {
                         // TODO: navigate to somewhere
-                        snackbarHostState.showSnackbar(
-                            message = "Đăng nhập thành công",
-                            withDismissAction = true,
-                            //duration = SnackbarDuration.Short
-                        )
                         navController.navigate(route = Screen.Home.route){
                             popUpTo(Screen.Login.route) {inclusive = true}
                         }

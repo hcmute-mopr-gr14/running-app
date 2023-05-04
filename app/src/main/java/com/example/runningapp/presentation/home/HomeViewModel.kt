@@ -20,6 +20,8 @@ import javax.inject.Inject
 data class HomeScreenUiState(
     val nickname: String = "",
     val level: Int = 0,
+    val remainingSteps: Int = 0,
+    val nextMilestone: Int = 500,
     val runningLogs: List<RunningLogsDataDTO> = emptyList(),
     var showAllHistoryInfo: Boolean = false,
     var selectedIndex: Int = 0,
@@ -69,6 +71,7 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
         }
         return level
     }
+
     private fun calculateRemainingStepsAndNextMilestone(totalSteps: Int): Pair<Int, Int> {
         val milestones = listOf(500, 1000, 2000, 4000, 8000, 16000, 32000)
         var remainingSteps = totalSteps
@@ -82,10 +85,8 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
                 break
             }
         }
-
         return Pair(remainingSteps, nextMilestone)
     }
-
 
     fun formatDuration(seconds: Long): String {
         val hours = seconds / 3600
@@ -108,6 +109,8 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
                             nickname = homeResponseData.nickname,
                             runningLogs = homeResponseData.runningLogs,
                             level = level,
+                            remainingSteps = 250,
+                            nextMilestone = nextMilestone
                         )
                     }
                     _uiEvent.send(HomeScreenUiEvent.HomeSuccess)

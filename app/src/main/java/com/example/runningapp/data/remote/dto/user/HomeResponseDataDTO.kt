@@ -12,6 +12,6 @@ data class RunningLogsDataDTO(
     val _id: String,
     val seconds: Int,
     val steps: Int,
-    val distance: Int,
+    val distance: Float,
     val date: String
 )

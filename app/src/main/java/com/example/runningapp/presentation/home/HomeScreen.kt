@@ -120,40 +120,48 @@ fun HomeScreen(
                             Row(
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 20.dp),
+                                    .padding(horizontal = 20.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Column() {
-                                    Row() {
-                                        Text(
-                                            text = uiState,
-                                            fontSize = 16.sp,
-                                            modifier = Modifier.alignByBaseline()
-                                        )
-                                        Text(
-                                            text = "/15,000",
-                                            fontSize = 20.sp,
-                                            modifier = Modifier.alignByBaseline()
-                                        )
-                                        Text(
-                                            text = " steps",
-                                            modifier = Modifier.alignByBaseline()
-                                        )
-                                        Spacer(modifier = Modifier.width(50.dp))
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Row(
+                                            horizontalArrangement = Arrangement.Start,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = "${uiState.remainingSteps}",
+                                                fontSize = 16.sp,
+                                                modifier = Modifier.alignByBaseline().align(Alignment.CenterVertically)
+                                            )
+                                            Text(
+                                                text = "/${uiState.nextMilestone}",
+                                                fontSize = 20.sp,
+                                                modifier = Modifier.alignByBaseline().align(Alignment.CenterVertically)
+                                            )
+                                            Text(
+                                                text = " steps",
+                                                modifier = Modifier.alignByBaseline().align(Alignment.CenterVertically)
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.weight(1f))
                                         Text(
                                             text = "Level ${uiState.level}",
-                                            color = Color.Yellow
+                                            color = Color.Yellow,
+                                            modifier = Modifier.align(Alignment.CenterVertically)
                                         )
                                     }
-                                    AccumulatedValueRainbowBar(accumulatedValue = 0.7f)
+                                    AccumulatedValueRainbowBar(accumulatedValue = (uiState.remainingSteps/uiState.nextMilestone).toFloat())
                                 }
-                                Spacer(modifier = Modifier.width(10.dp))
+                                /*Spacer(modifier = Modifier.width(10.dp))
                                 Image(
                                     painter = painterResource(id = R.drawable.logo),
                                     contentDescription = "",
                                     Modifier.size(40.dp)
-                                )
+                                )*/
                             }
                             Button(
                                 onClick = { },
@@ -167,10 +175,10 @@ fun HomeScreen(
                                     painter = painterResource(id = R.drawable.ic_launcher_foreground),
                                     contentDescription = ""
                                 )
-                                Column() {
+                                /*Column() {
                                     Text(text = "title")
                                     Text(text = "information")
-                                }
+                                }*/
                             }
                             Button(
                                 onClick = { },
@@ -291,7 +299,7 @@ fun AccumulatedValueRainbowBar(accumulatedValue: Float) {
     Box(
         modifier = Modifier
             .height(10.dp)
-            .width(270.dp)
+            .fillMaxWidth()
             .background(color = Color.White, shape = RoundedCornerShape(10.dp))
     ) {
         // Thanh tiến trình theo số tích lũy
@@ -322,7 +330,7 @@ fun HistoryInfo(
                     .fillMaxWidth()
                     .height(70.dp)
                     .padding(horizontal = 10.dp, vertical = 10.dp)
-                    .background(Color.Red, shape = RoundedCornerShape(12.dp))
+                    .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp))
             ) {
                 Row(
                     Modifier
@@ -340,14 +348,14 @@ fun HistoryInfo(
                         )
                         Text(
                             text = "%.1f km  %.0f kcal".format(
-                                runningLog.distance.toFloat(),
+                                runningLog.distance,
                                 runningLog.distance / 1.6 * 100
                             ),
                             color = Color.White,
                             fontSize = 12.sp
                         )
                     }
-                    Spacer(modifier = Modifier.width(90.dp))
+                    Spacer(modifier = Modifier.width(130.dp))
                     Text(
                         text = String.format(Locale.ENGLISH, "%d steps", runningLog.steps),
                         color = Color.White,
