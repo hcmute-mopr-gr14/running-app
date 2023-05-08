@@ -1,10 +1,10 @@
-package com.example.runningapp.data.remote.repositories
+package com.example.runningapp.data.remote
 
 import com.example.runningapp.data.remote.dto.ApiResponse
 import com.example.runningapp.data.remote.dto.user.*
 
-interface UserRepository {
+interface RunningApiService {
     suspend fun login(body: LoginRequestDTO) : ApiResponse<LoginResponseDataDTO>?
     suspend fun signup(body: SignupRequestDTO) : ApiResponse<SignupResponseDataDTO>?
-    suspend fun home() : ApiResponse<HomeResponseDataDTO>?
+    suspend fun fetchHomeData() : ApiResponse<HomeResponseDataDTO>?
 }

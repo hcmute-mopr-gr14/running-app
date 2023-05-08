@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.runningapp.data.entities.RunningLog
 import com.example.runningapp.data.remote.dto.ApiError
 import com.example.runningapp.data.remote.dto.ApiResponse
 import com.example.runningapp.data.remote.dto.user.RunningLogsDataDTO
@@ -22,7 +23,7 @@ data class HomeScreenUiState(
     val level: Int = 0,
     val remainingSteps: Int = 0,
     val nextMilestone: Int = 500,
-    val runningLogs: List<RunningLogsDataDTO> = emptyList(),
+    val runningLogs: List<RunningLog> = emptyList(),
     var showAllHistoryInfo: Boolean = false,
     var selectedIndex: Int = 0,
     val bottomNavigationItems: List<ImageVector> = listOf(
@@ -51,6 +52,25 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
 
     val uiState = _uiState.asStateFlow()
     val uiEvent = _uiEvent.receiveAsFlow()
+
+    init {
+        viewModelScope.launch {
+            homeUseCase.getRunningLogs().collect { logs ->
+                val totalSteps = logs.sumOf { it.steps }
+                val (remainingSteps, nextMilestone) = calculateRemainingStepsAndNextMilestone(totalSteps)
+                val level = calculateLevel(totalSteps)
+                _uiState.update { uiState ->
+                    uiState.copy(
+                        nickname = "Nickname",
+                        runningLogs = logs,
+                        level = level,
+                        remainingSteps = remainingSteps,
+                        nextMilestone = nextMilestone
+                    )
+                }
+            }
+        }
+    }
 
     fun updateShowAllHistoryInfo(showAll: Boolean) {
         _uiState.update { uiState ->
@@ -95,37 +115,39 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
         return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds)
     }
 
-    fun home() {
-        viewModelScope.launch {
-            when (val response = homeUseCase.home()) {
-                is ApiResponse.Data -> {
-                    val homeResponseData = response.data
-                    val totalSteps = homeResponseData.runningLogs.sumOf { it.steps }
-                    val (remainingSteps, nextMilestone) = calculateRemainingStepsAndNextMilestone(totalSteps)
-                    val level = calculateLevel(totalSteps)
-
-                    _uiState.update { uiState ->
-                        uiState.copy(
-                            nickname = homeResponseData.nickname,
-                            runningLogs = homeResponseData.runningLogs,
-                            level = level,
-                            remainingSteps = remainingSteps,
-                            nextMilestone = nextMilestone
-                        )
-                    }
-                    _uiEvent.send(HomeScreenUiEvent.HomeSuccess)
-                }
-                is ApiResponse.Error -> {
-                    _uiEvent.send(HomeScreenUiEvent.HomeFailure(response.error))
-                }
-                else -> {
-                    _uiEvent.send(
-                        HomeScreenUiEvent.HomeFailure(
-                            ApiError(code = "EXCEPTION", message = "Request failed")
-                        )
-                    )
-                }
-            }
-        }
-    }
+//    fun home() {
+//        viewModelScope.launch {
+//            when (val response = homeUseCase.home()) {
+//                is ApiResponse.Data -> {
+//                    val homeResponseData = response.data
+//                    val totalSteps = homeResponseData.runningLogs.sumOf { it.steps }
+//                    val (remainingSteps, nextMilestone) = calculateRemainingStepsAndNextMilestone(totalSteps)
+//                    val level = calculateLevel(totalSteps)
+//
+//                    _uiState.update { uiState ->
+//                        uiState.copy(
+//                            nickname = homeResponseData.nickname,
+//                            runningLogs = homeResponseData.runningLogs,
+//                            level = level,
+//                            remainingSteps = remainingSteps,
+//                            nextMilestone = nextMilestone
+//                        )
+//                    }
+//                    _uiEvent.send(HomeScreenUiEvent.HomeSuccess)
+//                }
+//
+//                is ApiResponse.Error -> {
+//                    _uiEvent.send(HomeScreenUiEvent.HomeFailure(response.error))
+//                }
+//
+//                else -> {
+//                    _uiEvent.send(
+//                        HomeScreenUiEvent.HomeFailure(
+//                            ApiError(code = "EXCEPTION", message = "Request failed")
+//                        )
+//                    )
+//                }
+//            }
+//        }
+//    }
 }

@@ -27,6 +27,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import com.example.runningapp.R
@@ -42,16 +44,17 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
 ) {
-    val uiState by viewModel.uiState.collectAsState(LoginScreenUiState())
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle(LoginScreenUiState())
     val lifecycle = LocalLifecycleOwner.current.lifecycle
+
     LaunchedEffect(key1 = Unit) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.uiEvent.collect { event ->
+            viewModel.uiEvent.flowWithLifecycle(lifecycle).collect { event ->
                 when (event) {
                     is LoginScreenUiEvent.LoginSuccess -> {
                         // TODO: navigate to somewhere
-                        navController.navigate(route = Screen.Home.route){
-                            popUpTo(Screen.Login.route) {inclusive = true}
+                        navController.navigate(route = Screen.Home.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
                         }
                     }
 

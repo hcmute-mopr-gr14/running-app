@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.runningapp.R
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -41,8 +42,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel<HomeViewModel>()
 ) {
-    viewModel.home()
-    val uiState by viewModel.uiState.collectAsState(HomeScreenUiState())
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle(HomeScreenUiState())
     Scaffold(
         bottomBar = {
             Box(
@@ -340,8 +340,10 @@ fun HistoryInfo(
                 ) {
                     Column() {
                         Text(
-                            text = ZonedDateTime.parse(runningLog.date)
-                                .format(DateTimeFormatter.ofPattern("dd MMMM", Locale.getDefault())),
+                            // TODO: fix
+//                            text = ZonedDateTime.parse(runningLog.date)
+//                                .format(DateTimeFormatter.ofPattern("dd MMMM", Locale.getDefault())),
+                            text = "OK",
                             color = Color.White,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold
