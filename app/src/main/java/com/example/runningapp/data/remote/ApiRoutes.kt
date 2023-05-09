@@ -5,4 +5,5 @@ object ApiRoutes {
     const val LOGIN = "$BASE_URL/login"
     const val SIGN_UP = "$BASE_URL/signup"
     const val HOME = "$BASE_URL/home"
+    const val USER_RUNS = "$BASE_URL/user/runs"
 }
