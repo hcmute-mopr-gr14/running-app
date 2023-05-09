@@ -1,7 +1,7 @@
 package com.example.runningapp.data.di
 
 import com.example.runningapp.data.local.data_sources.UserLocalDataSource
-import com.example.runningapp.data.models.RunningLog
+import com.example.runningapp.data.models.Run
 import com.example.runningapp.data.models.User
 import com.example.runningapp.data.remote.DefaultRunningApiService
 import com.example.runningapp.data.remote.RunningApiService
@@ -65,10 +65,10 @@ internal object DataModule {
     fun provideRealm(): Realm {
         val config = RealmConfiguration.Builder(
             schema = setOf(
-                User::class, RunningLog::class
+                User::class, Run::class, Run.Round::class, Run.Round.LatLng::class
             )
         )
-            .schemaVersion(3)
+            .schemaVersion(4)
             .deleteRealmIfMigrationNeeded()
             .compactOnLaunch()
             .build()
