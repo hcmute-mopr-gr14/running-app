@@ -7,10 +7,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.runningapp.data.entities.RunningLog
+import com.example.runningapp.data.models.RunningLog
 import com.example.runningapp.data.remote.dto.ApiError
-import com.example.runningapp.data.remote.dto.ApiResponse
-import com.example.runningapp.data.remote.dto.user.RunningLogsDataDTO
 import com.example.runningapp.domain.use_cases.HomeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

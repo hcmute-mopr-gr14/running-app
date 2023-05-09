@@ -1,9 +1,6 @@
 package com.example.runningapp.di
 
-import android.content.Context
-import androidx.room.Room
-import com.example.runningapp.data.local.AppDatabase
-import com.example.runningapp.data.local.daos.RunningLogDao
+import com.example.runningapp.data.local.data_sources.UserLocalDataSource
 import com.example.runningapp.data.remote.DefaultRunningApiService
 import com.example.runningapp.data.remote.RunningApiService
 import com.example.runningapp.data.remote.data_sources.UserRemoteDataSource
@@ -12,7 +9,6 @@ import com.example.runningapp.data.repositories.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -65,9 +61,9 @@ internal object AppModule {
     @Singleton
     fun provideUserRepository(
         userRemoteDataSource: UserRemoteDataSource,
-        runningLogDao: RunningLogDao
+        userLocalDataSource: UserLocalDataSource
     ): UserRepository {
-        return DefaultUserRepository(userRemoteDataSource, runningLogDao)
+        return DefaultUserRepository(userRemoteDataSource, userLocalDataSource)
     }
 
     @Provides
@@ -86,24 +82,6 @@ internal object AppModule {
     @Singleton
     fun provideRunningApiService(@IoDispatcher dispatcher: CoroutineDispatcher, client: HttpClient): RunningApiService =
         DefaultRunningApiService(dispatcher, client)
-
-    @Provides
-    @Singleton
-    fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
-        return Room.databaseBuilder(
-            appContext,
-            AppDatabase::class.java,
-            "running-app"
-        )
-            .fallbackToDestructiveMigration()
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideRunningLogDao(appDatabase: AppDatabase): RunningLogDao {
-        return appDatabase.runningLogDao()
-    }
 }
 
 @Retention(AnnotationRetention.BINARY)
