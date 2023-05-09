@@ -1,8 +1,10 @@
 package com.example.runningapp.presentation.login
 
 import android.app.Application
-import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.AndroidViewModel
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.runningapp.R
@@ -29,7 +31,11 @@ sealed class LoginScreenUiEvent() {
 }
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val application: Application, private val loginUseCase: LoginUseCase) : ViewModel() {
+class LoginViewModel @Inject constructor(
+    private val application: Application,
+    private val loginUseCase: LoginUseCase,
+    private val dataStore: DataStore<Preferences>
+) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginScreenUiState())
     private val _uiEvent = Channel<LoginScreenUiEvent>()
 
@@ -65,11 +71,12 @@ class LoginViewModel @Inject constructor(private val application: Application, p
                 password = _uiState.value.passwordInput.value
             )) {
                 is ApiResponse.Data -> {
+                    dataStore.edit { it[stringPreferencesKey("userId")] = response.data._id }
                     _uiEvent.send(LoginScreenUiEvent.LoginSuccess)
                 }
 
                 is ApiResponse.Error -> {
-                    val message = when(response.error.code) {
+                    val message = when (response.error.code) {
                         "EMAIL_NOT_FOUND_ERROR" -> application.getString(R.string.login_email_not_found)
                         "WRONG_PASSWORD_ERROR" -> application.getString(R.string.login_wrong_password)
                         else -> ""

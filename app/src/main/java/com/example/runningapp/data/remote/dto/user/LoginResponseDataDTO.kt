@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LoginResponseDataDTO(
-    val dummy: String? = null
+    val _id: String
 )
