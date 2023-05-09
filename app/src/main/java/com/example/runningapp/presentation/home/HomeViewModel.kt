@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.runningapp.data.models.RunningLog
+import com.example.runningapp.data.models.Run
 import com.example.runningapp.data.remote.dto.ApiError
 import com.example.runningapp.domain.use_cases.HomeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,13 +15,14 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 data class HomeScreenUiState(
     val nickname: String = "",
     val level: Int = 0,
     val remainingSteps: Int = 0,
     val nextMilestone: Int = 500,
-    val runningLogs: List<RunningLog> = emptyList(),
+    val runs: List<Run> = emptyList(),
     var showAllHistoryInfo: Boolean = false,
     var selectedIndex: Int = 0,
     val bottomNavigationItems: List<ImageVector> = listOf(
@@ -53,14 +54,15 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
 
     init {
         viewModelScope.launch {
-            homeUseCase.getRunningLogs().collect { logs ->
-                val totalSteps = logs.sumOf { it.steps }
+            homeUseCase.getRuns().collect { runs ->
+                val totalMeters = runs.sumOf { it.rounds.sumOf { it.meters } }
+                val totalSteps = (totalMeters / 1000 * 1_471).roundToInt()
                 val (remainingSteps, nextMilestone) = calculateRemainingStepsAndNextMilestone(totalSteps)
                 val level = calculateLevel(totalSteps)
                 _uiState.update { uiState ->
                     uiState.copy(
                         nickname = "Nickname",
-                        runningLogs = logs,
+                        runs = runs,
                         level = level,
                         remainingSteps = remainingSteps,
                         nextMilestone = nextMilestone
