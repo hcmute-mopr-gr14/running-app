@@ -6,5 +6,5 @@ import javax.inject.Singleton
 
 @Singleton
 class HomeUseCase @Inject constructor(private val userRepository: UserRepository) {
-    suspend fun getRunningLogs() = userRepository.getRunningLogs()
+    suspend fun getRuns() = userRepository.getRuns()
 }

@@ -1,8 +1,8 @@
 package com.example.runningapp.data.repositories
 
-import com.example.runningapp.data.models.RunningLog
+import com.example.runningapp.data.models.Run
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    suspend fun getRunningLogs(): Flow<List<RunningLog>>
+    suspend fun getRuns(): Flow<List<Run>>
 }

@@ -1,9 +1,9 @@
 package com.example.runningapp.data.local.data_sources
 
-import com.example.runningapp.data.models.RunningLog
+import com.example.runningapp.data.models.Run
 import io.realm.kotlin.Realm
-import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
+import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -11,20 +11,18 @@ import javax.inject.Singleton
 
 @Singleton
 class UserLocalDataSource @Inject constructor(private val realm: Realm) {
-    fun getAll(): Flow<List<RunningLog>> {
-        return realm.query<RunningLog>().asFlow().map { it.list }
+    fun getAllRuns(): Flow<List<Run>> {
+        return realm.query<Run>().asFlow().map { it.list }
     }
 
-    suspend fun upsert(logs: List<RunningLog>) {
+    suspend fun upsert(runs: List<Run>) {
         realm.write {
-            for (log in logs) {
-                val saved = query<RunningLog>("_id == $0", log._id).first().find()
+            for (run in runs) {
+                val saved = query<Run>("_id == $0", run._id).first().find()
                 if (saved != null) {
-                    saved.distance = log.distance
-                    saved.seconds = log.seconds
-                    saved.steps = log.steps
+                    saved.rounds = run.rounds.toRealmList()
                 } else {
-                    copyToRealm(log)
+                    copyToRealm(run)
                 }
             }
         }

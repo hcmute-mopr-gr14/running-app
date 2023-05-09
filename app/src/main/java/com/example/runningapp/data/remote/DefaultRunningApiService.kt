@@ -58,4 +58,15 @@ class DefaultRunningApiService @Inject constructor(@IoDispatcher private val dis
             }
         }
     }
+
+    override suspend fun fetchRuns(): ApiResponse<List<RunResponseDataDTO>>? {
+        return withContext(dispatcher) {
+            try {
+                val dto: ApiResponseDTO<List<RunResponseDataDTO>> = client.get(ApiRoutes.USER_RUNS).body()
+                dto.toApiResponse()
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
 }

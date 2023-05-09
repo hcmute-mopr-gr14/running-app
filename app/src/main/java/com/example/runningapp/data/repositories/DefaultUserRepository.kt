@@ -1,7 +1,7 @@
 package com.example.runningapp.data.repositories
 
 import android.util.Log
-import com.example.runningapp.data.models.RunningLog
+import com.example.runningapp.data.models.Run
 import com.example.runningapp.data.local.data_sources.UserLocalDataSource
 import com.example.runningapp.data.remote.data_sources.UserRemoteDataSource
 import kotlinx.coroutines.flow.Flow
@@ -15,16 +15,16 @@ class DefaultUserRepository @Inject constructor(
     private val remoteDataSource: UserRemoteDataSource,
     private val userLocalDataSource: UserLocalDataSource,
 ) : UserRepository {
-    private val runningLogs: Flow<List<RunningLog>> = userLocalDataSource.getAll()
-    override suspend fun getRunningLogs(): Flow<List<RunningLog>> = supervisorScope {
+    private val runs: Flow<List<Run>> = userLocalDataSource.getAllRuns()
+    override suspend fun getRuns(): Flow<List<Run>> = supervisorScope {
         launch {
             try {
-                userLocalDataSource.upsert(remoteDataSource.fetchRunningLogs())
+                userLocalDataSource.upsert(remoteDataSource.fetchRuns())
             } catch (e: Exception) {
                 Log.d("UserRepository", "Connection to remote failed, using local data source")
                 Log.d("UserRepository", e.toString())
             }
         }
-        runningLogs
+        runs
     }
 }
