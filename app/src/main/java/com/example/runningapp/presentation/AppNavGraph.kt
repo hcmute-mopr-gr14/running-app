@@ -1,7 +1,5 @@
 package com.example.runningapp.presentation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -13,7 +11,6 @@ import com.example.runningapp.presentation.intro.OnBoarding
 import com.example.runningapp.presentation.login.LoginScreen
 import com.example.runningapp.presentation.signup.SignupScreen
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavGraph(navController: NavHostController, snackbarHostState: SnackbarHostState) {
     NavHost(navController = navController, startDestination = Screen.GetStarted.route) {
