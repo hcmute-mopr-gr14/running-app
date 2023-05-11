@@ -5,6 +5,8 @@ import android.location.Location
 import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.runningapp.data.models.Run
+import com.example.runningapp.data.repositories.RunRepository
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -13,6 +15,7 @@ import com.google.maps.android.compose.CameraPositionState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +23,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -36,7 +43,10 @@ data class RunningScreenUiState(
 )
 
 @SuppressLint("MissingPermission")
-class RunningViewModel @AssistedInject constructor(@Assisted private val fusedLocationProviderClient: FusedLocationProviderClient) :
+class RunningViewModel @AssistedInject constructor(
+    @Assisted private val fusedLocationProviderClient: FusedLocationProviderClient,
+    private val runRepository: RunRepository
+) :
     ViewModel() {
     private val _points = MutableStateFlow<List<LatLng>>(listOf())
     private val _uiState = MutableStateFlow(
@@ -132,6 +142,16 @@ class RunningViewModel @AssistedInject constructor(@Assisted private val fusedLo
                     )
                 )
             )
+            runRepository.addRound(date = Clock.System.now().toLocalDateTime(TimeZone.UTC).date, round = Run.Round().apply {
+                points = _uiState.value.points.value.map {
+                    Run.Round.LatLng().apply {
+                        lat = it.latitude
+                        lng = it.longitude
+                    }
+                }.toRealmList()
+                meters = _uiState.value.totalDistance.toDouble()
+                seconds = _uiState.value.elapsedSeconds
+            })
         }
     }
 

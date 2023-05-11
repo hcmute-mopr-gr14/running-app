@@ -6,5 +6,5 @@ import kotlinx.datetime.LocalDate
 
 interface RunRepository {
     suspend fun getAll(): Flow<List<Run>>
-    suspend fun addRound(date: LocalDate, round: Run.Round): Run?
+    suspend fun addRound(date: LocalDate, round: Run.Round): Boolean
 }

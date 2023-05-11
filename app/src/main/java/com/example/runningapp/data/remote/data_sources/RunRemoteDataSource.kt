@@ -36,8 +36,8 @@ class RunRemoteDataSource @Inject constructor(private val runApiService: RunApiS
             else -> listOf()
         }
 
-    suspend fun addRound(date: LocalDate, round: Run.Round): Run? =
-        when (val response = runApiService.addRound(
+    suspend fun addRound(date: LocalDate, round: Run.Round): Boolean =
+        when (runApiService.addRound(
             AddRoundRequestDTO(
                 date = date,
                 round = AddRoundRequestDTO.RoundDTO(
@@ -48,23 +48,9 @@ class RunRemoteDataSource @Inject constructor(private val runApiService: RunApiS
             )
         )) {
             is ApiResponse.Data -> {
-                Run().apply {
-                    _id = ObjectId(response.data._id)
-                    rounds = response.data.rounds.map {
-                        Run.Round().apply {
-                            points = it.points.map {
-                                Run.Round.LatLng().apply {
-                                    lat = it.lat
-                                    lng = it.lng
-                                }
-                            }.toRealmList()
-                            meters = it.meters
-                            seconds = it.seconds
-                        }
-                    }.toRealmList()
-                }
+                true
             }
 
-            else -> null
+            else -> false
         }
 }

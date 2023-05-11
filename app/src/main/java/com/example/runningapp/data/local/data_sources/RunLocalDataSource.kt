@@ -6,6 +6,7 @@ import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.ext.toRealmList
+import io.realm.kotlin.query.find
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -37,26 +38,27 @@ class RunLocalDataSource @Inject constructor(
         }
     }
 
-    suspend fun addRound(date: LocalDate, round: Run.Round): Run? =
+    suspend fun addRound(date: LocalDate, round: Run.Round): Boolean =
         withContext(dispatcher) {
-            val latest = realm.query<Run>().first().find()
-            if (latest == null || Instant.fromEpochSeconds(latest._id.timestamp.toLong())
-                    .toLocalDateTime(TimeZone.UTC).date < date
-            ) {
-                return@withContext realm.write {
-                    copyToRealm(Run().apply {
-                        _id = ObjectId(date.atStartOfDayIn(TimeZone.UTC).epochSeconds)
-                        rounds = realmListOf(round)
-                    })
+            val runs = realm.query<Run>().find()
+            for (run in runs) {
+                println("${Instant.fromEpochSeconds(run._id.timestamp.toLong()).toLocalDateTime(TimeZone.UTC).date} == $date")
+                if (Instant.fromEpochSeconds(run._id.timestamp.toLong()).toLocalDateTime(TimeZone.UTC).date == date) {
+                    realm.write {
+                        val latest = findLatest(run)
+                        latest?.rounds?.add(round)
+                    }
+                    println("update $run")
+                    return@withContext true
                 }
             }
-            if (Instant.fromEpochSeconds(latest._id.timestamp.toLong()).toLocalDateTime(TimeZone.UTC).date == date) {
-                realm.write {
-                    latest.rounds.add(round)
-                }
-                latest
-            } else {
-                null
+            realm.write {
+                copyToRealm(Run().apply {
+                    _id = ObjectId(date.atStartOfDayIn(TimeZone.UTC).epochSeconds)
+                    rounds = realmListOf(round)
+                })
+                println("add $round")
             }
+            return@withContext true
         }
 }

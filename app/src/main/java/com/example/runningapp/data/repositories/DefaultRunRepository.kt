@@ -29,7 +29,7 @@ class DefaultRunRepository @Inject constructor(
         all
     }
 
-    override suspend fun addRound(date: LocalDate, round: Run.Round): Run? = supervisorScope {
+    override suspend fun addRound(date: LocalDate, round: Run.Round): Boolean = supervisorScope {
         launch {
             try {
                 remoteDataSource.addRound(date, round)

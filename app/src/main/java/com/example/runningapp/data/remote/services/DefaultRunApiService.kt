@@ -5,6 +5,7 @@ import com.example.runningapp.data.remote.dto.ApiError
 import com.example.runningapp.data.remote.dto.ApiResponse
 import com.example.runningapp.data.remote.dto.ApiResponseDTO
 import com.example.runningapp.data.remote.dto.run.AddRoundRequestDTO
+import com.example.runningapp.data.remote.dto.run.AddRoundResponseDataDTO
 import com.example.runningapp.data.remote.dto.run.RunDTO
 import com.example.runningapp.di.IoDispatcher
 import io.ktor.client.*
@@ -32,12 +33,12 @@ class DefaultRunApiService @Inject constructor(
         }
     }
 
-    override suspend fun addRound(round: AddRoundRequestDTO): ApiResponse<RunDTO> =
+    override suspend fun addRound(round: AddRoundRequestDTO): ApiResponse<AddRoundResponseDataDTO> =
         withContext(dispatcher) {
             try {
-                val dto: ApiResponseDTO<RunDTO> = client.post(ApiRoutes.USER_RUNS) {
+                val dto: ApiResponseDTO<AddRoundResponseDataDTO> = client.post(ApiRoutes.USER_RUNS) {
                     contentType(ContentType.Application.Json)
-                    setBody(body)
+                    setBody(round)
                 }.body()
                 dto.toApiResponse()
             } catch (e: Exception) {
