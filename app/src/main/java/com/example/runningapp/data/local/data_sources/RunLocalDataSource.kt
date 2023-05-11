@@ -6,6 +6,7 @@ import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.ext.toRealmList
+import io.realm.kotlin.query.Sort
 import io.realm.kotlin.query.find
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,7 @@ class RunLocalDataSource @Inject constructor(
     private val realm: Realm
 ) {
     fun getAll(): Flow<List<Run>> {
-        return realm.query<Run>().asFlow().map { it.list }
+        return realm.query<Run>().sort(property = "_id", sortOrder = Sort.DESCENDING).asFlow().map { it.list }
     }
 
     suspend fun upsertRuns(runs: List<Run>) {
@@ -42,7 +43,11 @@ class RunLocalDataSource @Inject constructor(
         withContext(dispatcher) {
             val runs = realm.query<Run>().find()
             for (run in runs) {
-                println("${Instant.fromEpochSeconds(run._id.timestamp.toLong()).toLocalDateTime(TimeZone.UTC).date} == $date")
+                println(
+                    "${
+                        Instant.fromEpochSeconds(run._id.timestamp.toLong()).toLocalDateTime(TimeZone.UTC).date
+                    } == $date"
+                )
                 if (Instant.fromEpochSeconds(run._id.timestamp.toLong()).toLocalDateTime(TimeZone.UTC).date == date) {
                     realm.write {
                         val latest = findLatest(run)
