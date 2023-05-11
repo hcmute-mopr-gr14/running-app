@@ -5,6 +5,7 @@ import io.realm.kotlin.types.EmbeddedRealmObject
 import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
+import kotlinx.serialization.Serializable
 import org.mongodb.kbson.ObjectId
 
 class Run : RealmObject {
