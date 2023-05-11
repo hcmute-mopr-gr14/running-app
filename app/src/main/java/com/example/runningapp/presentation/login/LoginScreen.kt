@@ -10,7 +10,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +40,7 @@ import com.example.runningapp.ui.theme.RunningAppTheme
 fun LoginScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
+    onNavigateToOnBoarding: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
 ) {
@@ -75,6 +75,7 @@ fun LoginScreen(
         onPasswordChange = viewModel::setPassword,
         onRememberMeChange = viewModel::setRememberMe,
         onSubmit = viewModel::login,
+        onNavigateToOnBoarding = onNavigateToOnBoarding,
         modifier = modifier,
     )
 }
@@ -86,11 +87,12 @@ fun LoginScreen(
     onPasswordChange: (String) -> Unit,
     onRememberMeChange: (Boolean) -> Unit,
     onSubmit: () -> Unit,
+    onNavigateToOnBoarding: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
     Column(modifier = Modifier.fillMaxSize().padding(8.dp, 0.dp).then(modifier)) {
-        IconButton(onClick = {}) {
+        IconButton(onClick = onNavigateToOnBoarding) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = stringResource(id = R.string.login_back_description)
@@ -102,7 +104,7 @@ fun LoginScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
             modifier = Modifier.weight(1f).padding(horizontal = 32.dp)
         ) {
-            val painter = painterResource(R.drawable.ic_launcher_background)
+            val painter = painterResource(R.drawable.logo)
             Image(
                 painter = painter,
                 contentDescription = stringResource(id = R.string.login_logo_description),
@@ -201,7 +203,8 @@ fun LoginScreenPreview() {
                 onEmailChange = {},
                 onPasswordChange = {},
                 onRememberMeChange = {},
-                onSubmit = {})
+                onSubmit = {},
+                onNavigateToOnBoarding = {})
         }
     }
 }
