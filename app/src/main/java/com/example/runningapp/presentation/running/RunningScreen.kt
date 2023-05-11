@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.runningapp.R
+import com.example.runningapp.domain.utils.metersToCalories
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -185,17 +186,19 @@ fun RunningScreen(
                         }
                     }
 
-                    // equation: METS * weight (kg) * duration (hours)
-                    // METS = km/h * 1.0375
                     val kmPerHour by animateFloatAsState(targetValue = remember(totalDistance) {
                         totalDistance / max(
                             elapsedSeconds,
                             1
                         ) * 3.6
                     }.toFloat(), animationSpec = tween(durationMillis = 1000, easing = LinearEasing))
-                    val METS = kmPerHour * 1.0375
                     val calories by animateFloatAsState(
-                        targetValue = remember(totalDistance) { METS * 50 * elapsedSeconds / 3600 }.toFloat(),
+                        targetValue = remember(totalDistance) {
+                            metersToCalories(
+                                totalDistance.toDouble(),
+                                elapsedSeconds
+                            ).toFloat()
+                        },
                         animationSpec = tween(durationMillis = 1000, easing = LinearEasing)
                     )
                     Card(

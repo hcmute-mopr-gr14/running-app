@@ -6,7 +6,6 @@ import com.example.runningapp.data.remote.dto.run.AddRoundRequestDTO
 import com.example.runningapp.data.remote.services.RunApiService
 import io.realm.kotlin.ext.toRealmList
 import kotlinx.datetime.LocalDate
-import org.mongodb.kbson.ObjectId
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,6 +17,7 @@ class RunRemoteDataSource @Inject constructor(private val runApiService: RunApiS
                 response.data.map {
                     Run().apply {
                         _id = org.mongodb.kbson.BsonObjectId(it._id)
+                        date = LocalDate.parse(it.date).toString().split('T', ignoreCase = false, limit = 1)[0]
                         rounds = it.rounds.map {
                             Run.Round().apply {
                                 points = it.points.map {

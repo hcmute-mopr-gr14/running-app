@@ -31,6 +31,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.runningapp.R
+import com.example.runningapp.domain.utils.metersToCalories
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -323,6 +324,7 @@ fun HistoryInfo(
     ) {
         items(uiState.runs) { run ->
             val totalMeters = run.rounds.sumOf { it.meters }
+            val totalCalories = run.rounds.sumOf { metersToCalories(it.meters, it.seconds) }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -338,18 +340,15 @@ fun HistoryInfo(
                 ) {
                     Column() {
                         Text(
-                            // TODO: fix
-//                            text = ZonedDateTime.parse(runningLog.date)
-//                                .format(DateTimeFormatter.ofPattern("dd MMMM", Locale.getDefault())),
-                            text = "OK",
+                            text = run.date.toString(),
                             color = Color.White,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "%.1f km  %.0f kcal".format(
+                            text = "%.1fm  %.0f kcal".format(
                                 totalMeters,
-                                totalMeters / 1.6 * 100
+                                totalCalories
                             ),
                             color = Color.White,
                             fontSize = 12.sp

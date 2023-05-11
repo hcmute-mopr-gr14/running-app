@@ -5,12 +5,14 @@ import io.realm.kotlin.types.EmbeddedRealmObject
 import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
+import kotlinx.datetime.*
 import kotlinx.serialization.Serializable
 import org.mongodb.kbson.ObjectId
 
 class Run : RealmObject {
     @PrimaryKey
     var _id: ObjectId = ObjectId()
+    var date: String = ""
     var rounds: RealmList<Round> = realmListOf()
 
     class Round : EmbeddedRealmObject {
