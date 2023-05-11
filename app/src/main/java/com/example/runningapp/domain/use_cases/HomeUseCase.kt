@@ -1,10 +1,10 @@
 package com.example.runningapp.domain.use_cases
 
-import com.example.runningapp.data.repositories.UserRepository
+import com.example.runningapp.data.repositories.RunRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class HomeUseCase @Inject constructor(private val userRepository: UserRepository) {
-    suspend fun getRuns() = userRepository.getRuns()
+class HomeUseCase @Inject constructor(private val runRepository: RunRepository) {
+    suspend fun getRuns() = runRepository.getAll()
 }
