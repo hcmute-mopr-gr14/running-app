@@ -17,7 +17,9 @@ fun AppNavGraph(navController: NavHostController, snackbarHostState: SnackbarHos
         composable(
             route = Screen.Login.route,
         ) {
-            LoginScreen(snackbarHostState = snackbarHostState, navController = navController)
+            LoginScreen(snackbarHostState = snackbarHostState, navController = navController, onNavigateToOnBoarding = {
+                navController.navigate(route = Screen.OnBoarding.route)
+            })
         }
         composable(
             route = Screen.SignUp.route,
