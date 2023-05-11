@@ -36,8 +36,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
-    snackbarHostState: SnackbarHostState,
-    modifier: Modifier = Modifier,
+    onNavigateToRunningScreen: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel<HomeViewModel>()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle(HomeScreenUiState())
@@ -179,7 +178,7 @@ fun HomeScreen(
                                 }*/
                             }
                             Button(
-                                onClick = { },
+                                onClick = onNavigateToRunningScreen,
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(20.dp))
                                     .fillMaxWidth()

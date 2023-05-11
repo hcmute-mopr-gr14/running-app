@@ -29,7 +29,9 @@ fun AppNavGraph(navController: NavHostController, snackbarHostState: SnackbarHos
         composable(
             route = Screen.Home.route,
         ) {
-            HomeScreen(snackbarHostState = snackbarHostState)
+            HomeScreen(onNavigateToRunningScreen = {
+                navController.navigate(route = Screen.Running.route)
+            })
         }
         composable(
             route = Screen.GetStarted.route,
