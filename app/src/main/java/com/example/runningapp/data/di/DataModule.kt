@@ -3,10 +3,14 @@ package com.example.runningapp.data.di
 import com.example.runningapp.data.local.data_sources.UserLocalDataSource
 import com.example.runningapp.data.models.Run
 import com.example.runningapp.data.models.User
-import com.example.runningapp.data.remote.DefaultRunningApiService
-import com.example.runningapp.data.remote.RunningApiService
+import com.example.runningapp.data.remote.services.DefaultUserApiService
+import com.example.runningapp.data.remote.services.UserApiService
 import com.example.runningapp.data.remote.data_sources.UserRemoteDataSource
+import com.example.runningapp.data.remote.services.DefaultRunApiService
+import com.example.runningapp.data.remote.services.RunApiService
+import com.example.runningapp.data.repositories.DefaultRunRepository
 import com.example.runningapp.data.repositories.DefaultUserRepository
+import com.example.runningapp.data.repositories.RunRepository
 import com.example.runningapp.data.repositories.UserRepository
 import com.example.runningapp.di.IoDispatcher
 import dagger.Module
@@ -68,7 +72,7 @@ internal object DataModule {
                 User::class, Run::class, Run.Round::class, Run.Round.LatLng::class
             )
         )
-            .schemaVersion(4)
+            .schemaVersion(5)
             .deleteRealmIfMigrationNeeded()
             .compactOnLaunch()
             .build()
@@ -78,14 +82,20 @@ internal object DataModule {
     @Provides
     @Singleton
     fun provideUserRepository(
-        userRemoteDataSource: UserRemoteDataSource,
-        userLocalDataSource: UserLocalDataSource
-    ): UserRepository {
-        return DefaultUserRepository(userRemoteDataSource, userLocalDataSource)
-    }
+        userRepository: DefaultUserRepository
+    ): UserRepository = userRepository
 
     @Provides
     @Singleton
-    fun provideRunningApiService(@IoDispatcher dispatcher: CoroutineDispatcher, client: HttpClient): RunningApiService =
-        DefaultRunningApiService(dispatcher, client)
+    fun provideRunRepository(
+        runRepository: DefaultRunRepository
+    ): RunRepository = runRepository
+
+    @Provides
+    @Singleton
+    fun provideUserApiService(userApiService: DefaultUserApiService): UserApiService = userApiService
+
+    @Provides
+    @Singleton
+    fun provideRunApiService(runApiService: DefaultRunApiService): RunApiService = runApiService
 }

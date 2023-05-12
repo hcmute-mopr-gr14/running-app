@@ -1,5 +1,6 @@
-package com.example.runningapp.data.remote
+package com.example.runningapp.data.remote.services
 
+import com.example.runningapp.data.remote.ApiRoutes
 import com.example.runningapp.data.remote.dto.ApiResponse
 import com.example.runningapp.data.remote.dto.ApiResponseDTO
 import com.example.runningapp.data.remote.dto.user.*
@@ -7,17 +8,15 @@ import com.example.runningapp.di.IoDispatcher
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DefaultRunningApiService @Inject constructor(@IoDispatcher private val dispatcher: CoroutineDispatcher, private val client: HttpClient) : RunningApiService {
+class DefaultUserApiService @Inject constructor(@IoDispatcher private val dispatcher: CoroutineDispatcher, private val client: HttpClient) :
+    UserApiService {
     override suspend fun login(body: LoginRequestDTO): ApiResponse<LoginResponseDataDTO>? {
         return withContext(dispatcher) {
             try {
@@ -52,17 +51,6 @@ class DefaultRunningApiService @Inject constructor(@IoDispatcher private val dis
                     contentType(ContentType.Application.Json)
                     setBody(body)
                 }.body()
-                dto.toApiResponse()
-            } catch (e: Exception) {
-                null
-            }
-        }
-    }
-
-    override suspend fun fetchRuns(): ApiResponse<List<RunResponseDataDTO>>? {
-        return withContext(dispatcher) {
-            try {
-                val dto: ApiResponseDTO<List<RunResponseDataDTO>> = client.get(ApiRoutes.USER_RUNS).body()
                 dto.toApiResponse()
             } catch (e: Exception) {
                 null
