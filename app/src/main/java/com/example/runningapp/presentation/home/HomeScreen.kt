@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.runningapp.R
 import com.example.runningapp.domain.utils.metersToCalories
 import java.util.*
@@ -37,7 +39,13 @@ import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
+<<<<<<< Updated upstream
     onNavigateToRunningScreen: () -> Unit,
+=======
+    snackbarHostState: SnackbarHostState,
+    modifier: Modifier = Modifier,
+    navController: NavController,
+>>>>>>> Stashed changes
     viewModel: HomeViewModel = hiltViewModel<HomeViewModel>()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle(HomeScreenUiState())
@@ -86,15 +94,15 @@ fun HomeScreen(
                         ) {
                             Row(Modifier.padding(top = 20.dp)) {
                                 IconButton(
-                                    onClick = { },
+                                    onClick = { navController.navigate("userProfile") },
                                     modifier = Modifier
                                         .clip(CircleShape)
                                         .padding(start = 10.dp, end = 10.dp)
                                 ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.logo),
-                                        contentDescription = "",
-                                        modifier = Modifier.clip(CircleShape)
+                                    AsyncImage(
+                                        model = uiState.imageUrl,
+                                        contentDescription = null,
+                                        modifier = Modifier.clip(CircleShape).fillMaxSize()
                                     )
                                 }
                                 Column() {
