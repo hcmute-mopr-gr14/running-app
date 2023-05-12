@@ -41,6 +41,7 @@ fun LoginScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
     onNavigateToOnBoarding: () -> Unit,
+    onNavigateToSignUp: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
 ) {
@@ -76,6 +77,7 @@ fun LoginScreen(
         onRememberMeChange = viewModel::setRememberMe,
         onSubmit = viewModel::login,
         onNavigateToOnBoarding = onNavigateToOnBoarding,
+        onNavigateToSignUp = onNavigateToSignUp,
         modifier = modifier,
     )
 }
@@ -88,6 +90,7 @@ fun LoginScreen(
     onRememberMeChange: (Boolean) -> Unit,
     onSubmit: () -> Unit,
     onNavigateToOnBoarding: () -> Unit,
+    onNavigateToSignUp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -185,7 +188,7 @@ fun LoginScreen(
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = stringResource(R.string.login_new_user))
-                TextButton(onClick = {}, contentPadding = PaddingValues(), modifier = Modifier.padding(start = 0.dp)) {
+                TextButton(onClick = onNavigateToSignUp, contentPadding = PaddingValues(), modifier = Modifier.padding(start = 0.dp)) {
                     Text(text = stringResource(R.string.login_sign_up), color = MaterialTheme.colorScheme.primary)
                 }
             }
@@ -204,7 +207,8 @@ fun LoginScreenPreview() {
                 onPasswordChange = {},
                 onRememberMeChange = {},
                 onSubmit = {},
-                onNavigateToOnBoarding = {})
+                onNavigateToOnBoarding = {},
+                onNavigateToSignUp = {})
         }
     }
 }
