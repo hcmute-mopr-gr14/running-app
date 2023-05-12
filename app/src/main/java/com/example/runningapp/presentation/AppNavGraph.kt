@@ -13,7 +13,7 @@ import com.example.runningapp.presentation.login.LoginScreen
 import com.example.runningapp.presentation.running.RunningScreen
 import com.example.runningapp.presentation.running.RunningViewModel
 import com.example.runningapp.presentation.signup.SignupScreen
-<<<<<<< Updated upstream
+import com.example.runningapp.presentation.userprofile.UserProfileScreen
 import com.google.android.gms.location.LocationServices
 
 @Composable
@@ -23,12 +23,6 @@ fun AppNavGraph(
     snackbarHostState: SnackbarHostState,
     runningViewModelFactory: RunningViewModel.Factory
 ) {
-=======
-import com.example.runningapp.presentation.userprofile.UserProfile
-
-@Composable
-fun AppNavGraph(navController: NavHostController, snackbarHostState: SnackbarHostState) {
->>>>>>> Stashed changes
     NavHost(navController = navController, startDestination = Screen.Login.route) {
         composable(
             route = Screen.Login.route,
@@ -52,18 +46,18 @@ fun AppNavGraph(navController: NavHostController, snackbarHostState: SnackbarHos
         composable(
             route = Screen.Home.route,
         ) {
-<<<<<<< Updated upstream
-            HomeScreen(onNavigateToRunningScreen = {
-                navController.navigate(route = Screen.Running.route)
-            })
-=======
-            HomeScreen(snackbarHostState = snackbarHostState, navController = navController)
+            HomeScreen(
+                onNavigateToRunningScreen = {
+                    navController.navigate(route = Screen.Running.route)
+                },
+                onNavigateToUserProfileScreen = {
+                    navController.navigate(route = Screen.UserProfile.route)
+                })
         }
         composable(
             route = Screen.UserProfile.route,
         ) {
-            UserProfile(snackbarHostState = snackbarHostState)
->>>>>>> Stashed changes
+            UserProfileScreen()
         }
         composable(
             route = Screen.GetStarted.route,

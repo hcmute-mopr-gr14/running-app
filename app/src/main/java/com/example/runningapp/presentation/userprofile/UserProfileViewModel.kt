@@ -45,7 +45,10 @@ sealed class UserProfileScreenUiEvent() {
 }
 
 @HiltViewModel
-class UserProfileViewModel @Inject constructor(private val userprofileUseCase: UserProfileUseCase, private val homeUseCase: HomeUseCase) : ViewModel() {
+class UserProfileViewModel @Inject constructor(
+    private val userprofileUseCase: UserProfileUseCase,
+    private val homeUseCase: HomeUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UserProfileScreenUiState())
     private val _uiEvent = Channel<UserProfileScreenUiEvent>()
@@ -58,53 +61,15 @@ class UserProfileViewModel @Inject constructor(private val userprofileUseCase: U
 
     init {
         viewModelScope.launch {
-            homeUseCase.getRuns().collect { runs ->
-                val totalMeters = runs.sumOf { it.rounds.sumOf { it.meters } }
-                val totalSteps = (totalMeters / 1000 * 1_471).roundToInt()
-                val (remainingSteps, nextMilestone) = calculateRemainingStepsAndNextMilestone(totalSteps)
-                val level = calculateLevel(totalSteps)
+            userprofileUseCase.getUser().collect { user ->
                 _uiState.update { uiState ->
                     uiState.copy(
-                        nickname = "Nickname",
-                        remainingSteps = remainingSteps,
-                        nextMilestone = nextMilestone
+                        nickname = user.obj?.nickname ?: "User",
+                        imageUrl = user.obj?.imageUrl ?: ""
                     )
                 }
             }
-            /*userprofileUseCase.getUser().collect{ user ->
-                val imageUrl = user
-            }*/
         }
-    }
-
-    private fun calculateLevel(totalSteps: Int): Int {
-        val milestones = listOf(500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000)
-        var level = 1
-
-        for (milestone in milestones) {
-            if (totalSteps >= milestone) {
-                level++
-            } else {
-                break
-            }
-        }
-        return level
-    }
-
-    private fun calculateRemainingStepsAndNextMilestone(totalSteps: Int): Pair<Int, Int> {
-        val milestones = listOf(500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000)
-        var remainingSteps = totalSteps
-        var nextMilestone = milestones[0]
-
-        for (milestone in milestones) {
-            if (remainingSteps >= milestone) {
-                remainingSteps -= milestone
-                nextMilestone = milestone * 2
-            } else {
-                break
-            }
-        }
-        return Pair(remainingSteps, nextMilestone)
     }
 
     fun updateAvatar(imageData: ByteArray) {
@@ -120,9 +85,11 @@ class UserProfileViewModel @Inject constructor(private val userprofileUseCase: U
                     }
                     _uiEvent.send(UserProfileScreenUiEvent.UserProfileSuccess)
                 }
+
                 is ApiResponse.Error -> {
                     _uiEvent.send(UserProfileScreenUiEvent.UserProfileFailure(response.error))
                 }
+
                 else -> {
                     _uiEvent.send(
                         UserProfileScreenUiEvent.UserProfileFailure(

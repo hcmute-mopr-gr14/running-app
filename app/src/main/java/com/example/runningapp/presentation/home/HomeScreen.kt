@@ -39,13 +39,8 @@ import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
-<<<<<<< Updated upstream
     onNavigateToRunningScreen: () -> Unit,
-=======
-    snackbarHostState: SnackbarHostState,
-    modifier: Modifier = Modifier,
-    navController: NavController,
->>>>>>> Stashed changes
+    onNavigateToUserProfileScreen: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel<HomeViewModel>()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle(HomeScreenUiState())
@@ -94,7 +89,7 @@ fun HomeScreen(
                         ) {
                             Row(Modifier.padding(top = 20.dp)) {
                                 IconButton(
-                                    onClick = { navController.navigate("userProfile") },
+                                    onClick = onNavigateToUserProfileScreen,
                                     modifier = Modifier
                                         .clip(CircleShape)
                                         .padding(start = 10.dp, end = 10.dp)

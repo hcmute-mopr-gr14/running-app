@@ -26,8 +26,7 @@ import com.example.runningapp.ui.composables.PrimaryButton
 
 
 @Composable
-fun UserProfile(
-    snackbarHostState: SnackbarHostState,
+fun UserProfileScreen(
     viewModel: UserProfileViewModel = hiltViewModel<UserProfileViewModel>()
 ) {
     val uiState by viewModel.uiState.collectAsState(UserProfileScreenUiState())
@@ -69,7 +68,8 @@ fun UserProfile(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.primary),
+                .background(color = MaterialTheme.colorScheme.primary)
+                .padding(it),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(20.dp))

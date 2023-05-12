@@ -8,6 +8,7 @@ import com.example.runningapp.data.remote.data_sources.UserRemoteDataSource
 import com.example.runningapp.data.remote.dto.ApiResponse
 import com.example.runningapp.data.remote.dto.user.UserRequestDTO
 import com.example.runningapp.data.remote.dto.user.UserResponseDataDTO
+import io.realm.kotlin.notifications.SingleQueryChange
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -18,28 +19,16 @@ import javax.inject.Singleton
 class DefaultUserRepository @Inject constructor(
     private val remoteDataSource: UserRemoteDataSource,
     private val userLocalDataSource: UserLocalDataSource,
-<<<<<<< Updated upstream
-) : UserRepository {}
-=======
 ) : UserRepository {
-    private val runs: Flow<List<Run>> = userLocalDataSource.getAllRuns()
-    private val user: Flow<List<User>> = userLocalDataSource.getUser()
-    override suspend fun getRuns(): Flow<List<Run>> = supervisorScope {
-        launch {
-            try {
-                userLocalDataSource.upsert(remoteDataSource.fetchRuns())
-            } catch (e: Exception) {
-                Log.d("UserRepository", "Connection to remote failed, using local data source")
-                Log.d("UserRepository", e.toString())
-            }
-        }
-        runs
-    }
+    private val user: Flow<SingleQueryChange<User>> = userLocalDataSource.getUser()
 
-    override suspend fun getUser(): Flow<List<User>> = supervisorScope {
+    override suspend fun getUser(): Flow<SingleQueryChange<User>> = supervisorScope {
         launch {
             try {
-                userLocalDataSource.upsertUser(remoteDataSource.fetchUser())
+                val user = remoteDataSource.fetchUser()
+                if (user != null) {
+                    userLocalDataSource.upsertUser(user)
+                }
             } catch (e: Exception) {
                 Log.d("UserRepository", "Connection to remote failed, using local data source")
                 Log.d("UserRepository", e.toString())
@@ -48,4 +37,3 @@ class DefaultUserRepository @Inject constructor(
         user
     }
 }
->>>>>>> Stashed changes

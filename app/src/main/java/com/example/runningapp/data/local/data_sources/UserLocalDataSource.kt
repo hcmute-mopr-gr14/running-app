@@ -3,16 +3,17 @@ package com.example.runningapp.data.local.data_sources
 import com.example.runningapp.data.models.Run
 import com.example.runningapp.data.models.User
 import io.realm.kotlin.Realm
+import io.realm.kotlin.ext.query
+import io.realm.kotlin.ext.toRealmList
+import io.realm.kotlin.notifications.SingleQueryChange
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class UserLocalDataSource @Inject constructor(private val realm: Realm) {
-    fun getAllRuns(): Flow<List<Run>> {
-        return realm.query<Run>().asFlow().map { it.list }
-    }
-    fun getUser(): Flow<List<User>> {
-        return realm.query<User>().asFlow().map { it.list }
+    fun getUser(): Flow<SingleQueryChange<User>> {
+        return realm.query<User>().first().asFlow()
     }
 
     suspend fun upsert(runs: List<Run>) {
@@ -28,17 +29,14 @@ class UserLocalDataSource @Inject constructor(private val realm: Realm) {
         }
     }
 
-    suspend fun upsertUser(users: List<User>) {
+    suspend fun upsertUser(user: User) {
         realm.write {
-            for (user in users) {
-                val saved = query<User>("_id == $0", user._id).first().find()
-                if (saved != null) {
-                    saved.imageUrl = user.imageUrl
-                    saved.nickname = user.nickname
-                    saved.runs = user.runs.toRealmList()
-                } else {
-                    copyToRealm(user)
-                }
+            val saved = query<User>("_id == $0", user._id).first().find()
+            if (saved != null) {
+                saved.imageUrl = user.imageUrl
+                saved.nickname = user.nickname
+            } else {
+                copyToRealm(user)
             }
         }
     }
