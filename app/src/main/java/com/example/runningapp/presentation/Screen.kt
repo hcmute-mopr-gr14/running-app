@@ -8,4 +8,5 @@ sealed class Screen(val route: String) {
     object GetStarted: Screen(route = "getStarted")
     object OnBoarding: Screen(route = "onBoarding")
     object Running: Screen(route = "running")
+    object EditUserProfile: Screen(route = "edit_userProfile")
 }

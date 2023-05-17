@@ -1,6 +1,7 @@
 package com.example.runningapp.presentation.userprofile
 
 import android.net.Uri
+import android.widget.ImageButton
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -18,7 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.runningapp.R
@@ -27,6 +27,9 @@ import com.example.runningapp.ui.composables.PrimaryButton
 
 @Composable
 fun UserProfileScreen(
+    onNavigateToHome: () -> Unit,
+    onNavigateToEditUserProfileScreen: () -> Unit,
+    onNavigateToUserProfileScreen: () -> Unit,
     viewModel: UserProfileViewModel = hiltViewModel<UserProfileViewModel>()
 ) {
     val uiState by viewModel.uiState.collectAsState(UserProfileScreenUiState())
@@ -42,7 +45,6 @@ fun UserProfileScreen(
                     .height(60.dp)
                     .padding(start = 40.dp, end = 40.dp, bottom = 10.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .zIndex(0f)
                     .background(brush = uiState.radialGradientBrush)
             ) {
                 Row(
@@ -52,12 +54,19 @@ fun UserProfileScreen(
                 ) {
                     uiState.bottomNavigationItems.forEachIndexed { index, icon ->
                         IconButton(
-                            onClick = { uiState.selectedIndex = index },
+                            onClick = {
+                                uiState.selectedIndex = index
+                                when (index) {
+                                    0 -> onNavigateToHome()
+                                    3 -> onNavigateToUserProfileScreen()
+                                }
+                            },
                             modifier = Modifier.padding(vertical = 8.dp)
                         ) {
                             Icon(
                                 imageVector = icon,
-                                contentDescription = null
+                                contentDescription = null,
+                                tint = if (uiState.selectedIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
@@ -68,32 +77,40 @@ fun UserProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.primary)
+                .background(brush = uiState.radialGradientBrush)
                 .padding(it),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = "Thông tin cá nhân",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             uiState.let {
-                AsyncImage(
-                    model = uiState.imageUrl,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(150.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
+                Button(onClick = {
+                    launcher.launch(arrayOf("image/*"))
+                    uiState.isUpdatingAvatar = true
+                }) {
+                    AsyncImage(
+                        model = uiState.imageUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(150.dp)
+                    )
+                }
             }
-            Button(onClick = {
-                launcher.launch(arrayOf("image/*"))
-                uiState.isUpdatingAvatar = true
-            }) {
-                Text(text = "Open Document")
-            }
+//            Column(
+//                modifier = Modifier.padding(horizontal = 40.dp)
+//            ) {
+//                PrimaryButton(onClick = {
+//                    launcher.launch(arrayOf("image/*"))
+//                    uiState.isUpdatingAvatar = true
+//                }) {
+//                    Text(text = "Thay đổi ảnh đại diện")
+//                }
+//            }
             val context = LocalContext.current
             result.value?.let { uri ->
                 val inputStream = context.contentResolver.openInputStream(uri)
@@ -125,7 +142,7 @@ fun UserProfileScreen(
                         .padding(10.dp)
                 ) {
                     Text(
-                        text = "Thành tích",
+                        text = "THÀNH TÍCH",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -161,12 +178,12 @@ fun UserProfileScreen(
                                 horizontalAlignment = Alignment.End
                             ) {
                                 Text(
-                                    text = "${uiState.totalDistance}",
+                                    text = "%.1f".format(uiState.totalDistance),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = "km",
+                                    text = "m",
                                     fontSize = 12.sp
                                 )
                             }
@@ -195,7 +212,7 @@ fun UserProfileScreen(
                             Spacer(modifier = Modifier.width(10.dp))
                             Column(horizontalAlignment = Alignment.End) {
                                 Text(
-                                    text = "${uiState.remainingSteps}",
+                                    text = "${uiState.totalSteps}",
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -229,7 +246,7 @@ fun UserProfileScreen(
                             Spacer(modifier = Modifier.width(10.dp))
                             Column(horizontalAlignment = Alignment.End) {
                                 Text(
-                                    text = "${uiState.totalDistance * 100 / 1.6.toLong()}",
+                                    text = "%.1f".format(uiState.totalDistance / 1000 * 100 / 1.6),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -256,13 +273,9 @@ fun UserProfileScreen(
                 modifier = Modifier.padding(horizontal = 40.dp, vertical = 10.dp)
             ) {
                 PrimaryButton(
-                    onClick = { }
+                    onClick = onNavigateToEditUserProfileScreen
                 ) {
                     Text(text = "Chỉnh sửa thông tin cá nhân")
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                PrimaryButton(onClick = { }) {
-                    Text(text = "Đổi mật khẩu")
                 }
             }
         }
