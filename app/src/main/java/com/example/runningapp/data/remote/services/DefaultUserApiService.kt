@@ -53,6 +53,20 @@ class DefaultUserApiService @Inject constructor(
         }
     }
 
+    override suspend fun changePassword(body: UserRequestDTO): ApiResponse<ChangepasswordResponseDataDTO>? {
+        return withContext(dispatcher) {
+            try {
+                val dto: ApiResponseDTO<ChangepasswordResponseDataDTO> = client.put(ApiRoutes.USER) {
+                    contentType(ContentType.Application.Json)
+                    setBody(body)
+                }.body()
+                dto.toApiResponse()
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
     override suspend fun fetchUser(): ApiResponse<UserResponseDataDTO> {
         return withContext(dispatcher) {
             try {
@@ -71,7 +85,7 @@ class DefaultUserApiService @Inject constructor(
         return withContext(dispatcher) {
             try {
                 val response: HttpResponse = client.submitFormWithBinaryData(
-                    url = "",
+                    url = ApiRoutes.USER,
                     formData = formData {
                         append("image", imageBytes, Headers.build {
                             append(HttpHeaders.ContentType, "image/png")
