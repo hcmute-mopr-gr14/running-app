@@ -7,5 +7,5 @@ data class UserResponseDataDTO(
     val _id: String,
     val email: String,
     val nickname: String,
-    val imageUrl: String,
+    val imageUrl: String
 )
