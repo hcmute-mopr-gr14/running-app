@@ -13,6 +13,7 @@ sealed class Screen(val route: String) {
     object Profile : Screen(route = "profile/$ARG_USER_ID") {
         fun with(userId: String) = route.replace(ARG_USER_ID, userId)
     }
+    object FriendRequest : Screen(route = "friendRequest")
     companion object {
         const val ARG_USER_ID = "{userId}"
     }

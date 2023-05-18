@@ -14,7 +14,10 @@ class FriendUseCase @Inject constructor(
     private val friendApiService: FriendApiService
 ) {
     suspend fun getFriends() = friendRepository.getFriends()
-    suspend fun sendFriendRequest(email: String) = friendApiService.postFriendRequest(FriendRequestRequestDTO(email = email))
+    suspend fun getIncomingFriends() = friendRepository.getIncomingFriends()
+    suspend fun sendFriendRequest(email: String) =
+        friendApiService.postFriendRequest(FriendRequestRequestDTO(email = email))
+
     fun validateEmail(email: String): Validation {
         if (email.isBlank()) {
             return Validation.Error(message = "Invalid email")

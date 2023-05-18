@@ -11,6 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.runningapp.presentation.friend.FriendScreen
 import com.example.runningapp.presentation.friend.FriendViewModel
+import com.example.runningapp.presentation.friendrequest.FriendRequestScreen
+import com.example.runningapp.presentation.friendrequest.FriendRequestViewModel
 import com.example.runningapp.presentation.home.HomeScreen
 import com.example.runningapp.presentation.intro.GetStarted
 import com.example.runningapp.presentation.intro.OnBoarding
@@ -114,8 +116,11 @@ fun AppNavGraph(
                 viewModel = viewModel,
                 snackbarHostState = snackbarHostState,
                 navController = navController,
-                onClick = { friend ->
-                    navController.navigate(route = Screen.Profile.with(userId = friend._id.toHexString()))
+                onNavigateToProfileScreen = { userId ->
+                    navController.navigate(route = Screen.Profile.with(userId))
+                },
+                onNavigateToFriendRequestScreen = {
+                    navController.navigate(route = Screen.FriendRequest.route)
                 }
             )
         }
@@ -128,6 +133,20 @@ fun AppNavGraph(
                 navController = navController,
                 viewModel = viewModel,
                 onNavigateBack = { navController.popBackStack() })
+        }
+        composable(
+            route = Screen.FriendRequest.route,
+        ) {
+            val viewModel = hiltViewModel<FriendRequestViewModel>()
+            FriendRequestScreen(
+                viewModel = viewModel,
+                navController = navController,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToProfileScreen = { userId ->
+                    navController.navigate(route = Screen.Profile.with(userId))
+                })
         }
     }
 }

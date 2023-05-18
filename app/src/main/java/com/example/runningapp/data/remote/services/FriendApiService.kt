@@ -7,5 +7,6 @@ import com.example.runningapp.data.remote.dto.friend.FriendRequestResponseDTO
 
 interface FriendApiService {
     suspend fun fetchFriends(): ApiResponse<List<FriendDTO>>
+    suspend fun fetchIncomingFriends(): ApiResponse<List<FriendDTO>>
     suspend fun postFriendRequest(body: FriendRequestRequestDTO): ApiResponse<FriendRequestResponseDTO>
 }

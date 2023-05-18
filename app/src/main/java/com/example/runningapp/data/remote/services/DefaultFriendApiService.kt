@@ -37,6 +37,20 @@ class DefaultFriendApiService @Inject constructor(
         }
     }
 
+    override suspend fun fetchIncomingFriends(): ApiResponse<List<FriendDTO>> {
+        return withContext(dispatcher) {
+            try {
+                val dto: ApiResponseDTO<List<FriendDTO>> = client.get(ApiRoutes.USER_FRIENDS_REQUESTS_INCOMING).body()
+                dto.toApiResponse()
+            } catch (e: Exception) {
+                ApiResponse.Error(
+                    apiVersion = "--",
+                    error = ApiError(code = "EXCEPTION_ERROR", message = "Request failed")
+                )
+            }
+        }
+    }
+
     override suspend fun postFriendRequest(body: FriendRequestRequestDTO): ApiResponse<FriendRequestResponseDTO> =
         withContext(dispatcher) {
             try {

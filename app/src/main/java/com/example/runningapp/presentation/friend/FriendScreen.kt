@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import com.example.runningapp.data.models.Friend
 import com.example.runningapp.presentation.Screen
+import com.example.runningapp.presentation.friendrequest.FriendRequestScreen
 import com.example.runningapp.presentation.login.LoginScreenUiEvent
 import com.example.runningapp.ui.composables.MainNavigationBar
 
@@ -28,7 +30,8 @@ fun FriendScreen(
     viewModel: FriendViewModel,
     snackbarHostState: SnackbarHostState,
     navController: NavHostController,
-    onClick: (Friend) -> Unit
+    onNavigateToProfileScreen: (String) -> Unit,
+    onNavigateToFriendRequestScreen: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -52,11 +55,12 @@ fun FriendScreen(
         friends = uiState.friends,
         dialogUiState = uiState.dialogUiState,
         navController = navController,
-        onClick = onClick,
+        onClick = { onNavigateToProfileScreen(it._id.toHexString()) },
         onEmailChange = viewModel::updateDialogEmail,
         onAddFriend = viewModel::showAddFriendDialog,
         onDialogConfirm = viewModel::confirmAddFriendDialog,
         onDialogDismiss = viewModel::dismissAddFriendDialog,
+        onNavigateToFriendRequestScreen = onNavigateToFriendRequestScreen
     )
 }
 
@@ -71,6 +75,7 @@ fun FriendScreen(
     onEmailChange: (String) -> Unit,
     onDialogDismiss: () -> Unit,
     onDialogConfirm: () -> Unit,
+    onNavigateToFriendRequestScreen: () -> Unit
 ) {
     if (dialogUiState != null) {
         AddFriendDialog(
@@ -87,11 +92,8 @@ fun FriendScreen(
                     Text(text = "Friends")
                 },
                 actions = {
-                    IconButton(onClick = {}) {
-                        Icon(imageVector = Icons.Default.Menu, contentDescription = null)
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = null)
+                    IconButton(onClick = onNavigateToFriendRequestScreen) {
+                        Icon(imageVector = Icons.Default.Notifications, contentDescription = "Friend requests")
                     }
                 }
             )
