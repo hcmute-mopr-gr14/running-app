@@ -112,6 +112,7 @@ fun AppNavGraph(
             val viewModel = hiltViewModel<FriendViewModel>()
             FriendScreen(
                 viewModel = viewModel,
+                snackbarHostState = snackbarHostState,
                 navController = navController,
                 onClick = { friend ->
                     navController.navigate(route = Screen.Profile.with(userId = friend._id.toHexString()))

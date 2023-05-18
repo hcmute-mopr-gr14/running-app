@@ -7,4 +7,5 @@ object ApiRoutes {
     const val USER = "$BASE_URL/user"
     const val USER_RUNS = "$USER/runs"
     const val USER_FRIENDS = "$USER/friends"
+    const val USER_FRIENDS_REQUESTS = "$USER_FRIENDS/requests"
 }

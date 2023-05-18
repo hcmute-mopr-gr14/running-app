@@ -5,10 +5,13 @@ import com.example.runningapp.data.remote.dto.ApiError
 import com.example.runningapp.data.remote.dto.ApiResponse
 import com.example.runningapp.data.remote.dto.ApiResponseDTO
 import com.example.runningapp.data.remote.dto.friend.FriendDTO
+import com.example.runningapp.data.remote.dto.friend.FriendRequestRequestDTO
+import com.example.runningapp.data.remote.dto.friend.FriendRequestResponseDTO
 import com.example.runningapp.di.IoDispatcher
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.http.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -33,4 +36,20 @@ class DefaultFriendApiService @Inject constructor(
             }
         }
     }
+
+    override suspend fun postFriendRequest(body: FriendRequestRequestDTO): ApiResponse<FriendRequestResponseDTO> =
+        withContext(dispatcher) {
+            try {
+                val dto: ApiResponseDTO<FriendRequestResponseDTO> = client.post(ApiRoutes.USER_FRIENDS_REQUESTS) {
+                    contentType(ContentType.Application.Json)
+                    setBody(body)
+                }.body()
+                dto.toApiResponse()
+            } catch (e: Exception) {
+                ApiResponse.Error(
+                    apiVersion = "--",
+                    error = ApiError(code = "EXCEPTION_ERROR", message = "Request failed")
+                )
+            }
+        }
 }
