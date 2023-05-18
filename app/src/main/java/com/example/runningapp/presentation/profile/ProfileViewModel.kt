@@ -30,7 +30,7 @@ class ProfileViewModel @Inject constructor(
         val id = savedStateHandle.get<String>("userId")
         if (id != null) {
             viewModelScope.launch {
-                profileUseCase.getUser(ObjectId(id)).map { it.obj }.collect { user ->
+                profileUseCase.getUser(ObjectId(id)).collect { user ->
                     if (user != null) {
                         _uiState.update { it.copy(user = user) }
                     }
