@@ -3,6 +3,7 @@ package com.example.runningapp.ui.composables
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +27,23 @@ fun MainNavigationBar(
             selected = currentDestination?.hierarchy?.any { it.route == Screen.Home.route } == true,
             onClick = {
                 navController.navigate(Screen.Home.route) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+            colors = NavigationBarItemDefaults.colors(
+                indicatorColor = MaterialTheme.colorScheme.secondaryContainer,
+            )
+        )
+        NavigationBarItem(
+            icon = { Icon(Icons.Default.Person, contentDescription = null) },
+            label = { Text(text = "Profile") },
+            selected = currentDestination?.hierarchy?.any { it.route == Screen.UserProfile.route } == true,
+            onClick = {
+                navController.navigate(Screen.UserProfile.route) {
                     popUpTo(navController.graph.findStartDestination().id) {
                         saveState = true
                     }
