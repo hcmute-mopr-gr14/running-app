@@ -3,9 +3,12 @@ package com.example.runningapp.presentation
 import android.content.Context
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.runningapp.presentation.friend.FriendScreen
+import com.example.runningapp.presentation.friend.FriendViewModel
 import com.example.runningapp.presentation.home.HomeScreen
 import com.example.runningapp.presentation.intro.GetStarted
 import com.example.runningapp.presentation.intro.OnBoarding
@@ -106,6 +109,16 @@ fun AppNavGraph(
                 onNavigateToHome = {
                     navController.navigate(route = Screen.Home.route)
                 }
+            )
+        }
+        composable(
+            route = Screen.Friend.route,
+        ) {
+            val viewModel = hiltViewModel<FriendViewModel>()
+            FriendScreen(
+                viewModel = viewModel,
+                navController = navController,
+                onClick = { }
             )
         }
     }
