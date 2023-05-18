@@ -7,11 +7,12 @@ import com.example.runningapp.data.remote.dto.user.UserResponseDataDTO
 import com.example.runningapp.data.remote.services.UserApiService
 import com.example.runningapp.data.repositories.UserRepository
 import com.example.runningapp.domain.models.Validation
+import org.mongodb.kbson.ObjectId
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 class UserProfileUseCase @Inject constructor(private val userRepository: UserRepository, private val userApiService: UserApiService) {
-    suspend fun getUser() = userRepository.getUser()
+    suspend fun getUser(id: ObjectId) = userRepository.getUser(id)
 
     suspend fun updateAvatarOnApi(imageData: ByteArray): ApiResponse<UserResponseDataDTO>? {
         return userApiService.updateAvatar(imageData)
