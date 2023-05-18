@@ -1,5 +1,6 @@
 package com.example.runningapp.data.di
 
+import com.example.runningapp.data.models.Friend
 import com.example.runningapp.data.models.Run
 import com.example.runningapp.data.models.User
 import com.example.runningapp.data.remote.services.*
@@ -59,7 +60,11 @@ internal object DataModule {
     fun provideRealm(): Realm {
         val config = RealmConfiguration.Builder(
             schema = setOf(
-                User::class, Run::class, Run.Round::class, Run.Round.LatLng::class
+                User::class,
+                Run::class,
+                Run.Round::class,
+                Run.Round.LatLng::class,
+                Friend::class
             )
         )
             .schemaVersion(5)
