@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.runningapp.R
 import com.example.runningapp.domain.utils.metersToCalories
 import java.util.*
@@ -37,7 +39,9 @@ import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
+    onNavigateToHome: () -> Unit,
     onNavigateToRunningScreen: () -> Unit,
+    onNavigateToUserProfileScreen: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel<HomeViewModel>()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle(HomeScreenUiState())
@@ -45,9 +49,9 @@ fun HomeScreen(
         bottomBar = {
             Box(
                 modifier = Modifier
+                    .height(70.dp)
                     .padding(horizontal = 40.dp, vertical = 10.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .zIndex(0f)
                     .background(brush = uiState.radialGradientBrush)
             ) {
                 Row(
@@ -57,12 +61,19 @@ fun HomeScreen(
                 ) {
                     uiState.bottomNavigationItems.forEachIndexed { index, icon ->
                         IconButton(
-                            onClick = { uiState.selectedIndex = index },
+                            onClick = {
+                                uiState.selectedIndex = index
+                                when (index) {
+                                    0 -> onNavigateToHome()
+                                    3 -> onNavigateToUserProfileScreen()
+                                }
+                            },
                             modifier = Modifier.padding(vertical = 8.dp)
                         ) {
                             Icon(
                                 imageVector = icon,
-                                contentDescription = null
+                                contentDescription = null,
+                                tint = if (uiState.selectedIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
@@ -86,15 +97,17 @@ fun HomeScreen(
                         ) {
                             Row(Modifier.padding(top = 20.dp)) {
                                 IconButton(
-                                    onClick = { },
+                                    onClick = onNavigateToUserProfileScreen,
                                     modifier = Modifier
                                         .clip(CircleShape)
                                         .padding(start = 10.dp, end = 10.dp)
                                 ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.logo),
-                                        contentDescription = "",
-                                        modifier = Modifier.clip(CircleShape)
+                                    AsyncImage(
+                                        model = uiState.imageUrl,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .clip(CircleShape)
+                                            .fillMaxSize()
                                     )
                                 }
                                 Column() {
@@ -133,16 +146,22 @@ fun HomeScreen(
                                             Text(
                                                 text = "${uiState.remainingSteps}",
                                                 fontSize = 16.sp,
-                                                modifier = Modifier.alignByBaseline().align(Alignment.CenterVertically)
+                                                modifier = Modifier
+                                                    .alignByBaseline()
+                                                    .align(Alignment.CenterVertically)
                                             )
                                             Text(
                                                 text = "/${uiState.nextMilestone}",
                                                 fontSize = 20.sp,
-                                                modifier = Modifier.alignByBaseline().align(Alignment.CenterVertically)
+                                                modifier = Modifier
+                                                    .alignByBaseline()
+                                                    .align(Alignment.CenterVertically)
                                             )
                                             Text(
                                                 text = " steps",
-                                                modifier = Modifier.alignByBaseline().align(Alignment.CenterVertically)
+                                                modifier = Modifier
+                                                    .alignByBaseline()
+                                                    .align(Alignment.CenterVertically)
                                             )
                                         }
                                         Spacer(modifier = Modifier.weight(1f))
@@ -330,7 +349,10 @@ fun HistoryInfo(
                     .fillMaxWidth()
                     .height(70.dp)
                     .padding(horizontal = 10.dp, vertical = 10.dp)
-                    .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp))
+                    .background(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = RoundedCornerShape(12.dp)
+                    )
             ) {
                 Row(
                     Modifier
@@ -356,7 +378,11 @@ fun HistoryInfo(
                     }
                     Spacer(modifier = Modifier.width(130.dp))
                     Text(
-                        text = String.format(Locale.ENGLISH, "%d steps", (totalMeters / 1000 * 1_471).roundToInt()),
+                        text = String.format(
+                            Locale.ENGLISH,
+                            "%d steps",
+                            (totalMeters / 1000 * 1_471).roundToInt()
+                        ),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold

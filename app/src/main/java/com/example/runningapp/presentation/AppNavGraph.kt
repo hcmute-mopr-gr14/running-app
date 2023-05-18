@@ -13,6 +13,8 @@ import com.example.runningapp.presentation.login.LoginScreen
 import com.example.runningapp.presentation.running.RunningScreen
 import com.example.runningapp.presentation.running.RunningViewModel
 import com.example.runningapp.presentation.signup.SignupScreen
+import com.example.runningapp.presentation.userprofile.EditUserProfileScreen
+import com.example.runningapp.presentation.userprofile.UserProfileScreen
 import com.google.android.gms.location.LocationServices
 
 @Composable
@@ -22,7 +24,7 @@ fun AppNavGraph(
     snackbarHostState: SnackbarHostState,
     runningViewModelFactory: RunningViewModel.Factory
 ) {
-    NavHost(navController = navController, startDestination = Screen.Login.route) {
+    NavHost(navController = navController, startDestination = Screen.SignUp.route) {
         composable(
             route = Screen.Login.route,
         ) {
@@ -45,9 +47,43 @@ fun AppNavGraph(
         composable(
             route = Screen.Home.route,
         ) {
-            HomeScreen(onNavigateToRunningScreen = {
-                navController.navigate(route = Screen.Running.route)
-            })
+            HomeScreen(
+                onNavigateToRunningScreen = {
+                    navController.navigate(route = Screen.Running.route)
+                },
+                onNavigateToHome = {
+                    navController.navigate(route = Screen.Home.route)
+                },
+                onNavigateToUserProfileScreen = {
+                    navController.navigate(route = Screen.UserProfile.route)
+                })
+        }
+        composable(
+            route = Screen.UserProfile.route,
+        ) {
+            UserProfileScreen(
+                onNavigateToHome = {
+                    navController.navigate(route = Screen.Home.route)
+                },
+                onNavigateToUserProfileScreen = {
+                    navController.navigate(route = Screen.UserProfile.route)
+                },
+                onNavigateToEditUserProfileScreen = {
+                    navController.navigate(route = Screen.EditUserProfile.route)
+                })
+        }
+        composable(
+            route = Screen.EditUserProfile.route,
+        ) {
+            EditUserProfileScreen(
+                snackbarHostState = snackbarHostState, navController = navController,
+                onNavigateToHome = {
+                    navController.navigate(route = Screen.Home.route)
+                },
+                onNavigateToUserProfileScreen = {
+                    navController.navigate(route = Screen.UserProfile.route)
+                }
+            )
         }
         composable(
             route = Screen.GetStarted.route,

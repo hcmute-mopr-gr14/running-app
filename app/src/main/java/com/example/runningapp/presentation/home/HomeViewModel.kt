@@ -20,6 +20,7 @@ import kotlin.math.roundToInt
 data class HomeScreenUiState(
     val nickname: String = "",
     val level: Int = 0,
+    val imageUrl: String = "",
     val remainingSteps: Int = 0,
     val nextMilestone: Int = 500,
     val runs: List<Run> = emptyList(),
@@ -108,46 +109,10 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
         return Pair(remainingSteps, nextMilestone)
     }
 
-    fun formatDuration(seconds: Long): String {
+    /*fun formatDuration(seconds: Long): String {
         val hours = seconds / 3600
         val minutes = (seconds % 3600) / 60
         val remainingSeconds = seconds % 60
         return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds)
-    }
-
-//    fun home() {
-//        viewModelScope.launch {
-//            when (val response = homeUseCase.home()) {
-//                is ApiResponse.Data -> {
-//                    val homeResponseData = response.data
-//                    val totalSteps = homeResponseData.runningLogs.sumOf { it.steps }
-//                    val (remainingSteps, nextMilestone) = calculateRemainingStepsAndNextMilestone(totalSteps)
-//                    val level = calculateLevel(totalSteps)
-//
-//                    _uiState.update { uiState ->
-//                        uiState.copy(
-//                            nickname = homeResponseData.nickname,
-//                            runningLogs = homeResponseData.runningLogs,
-//                            level = level,
-//                            remainingSteps = remainingSteps,
-//                            nextMilestone = nextMilestone
-//                        )
-//                    }
-//                    _uiEvent.send(HomeScreenUiEvent.HomeSuccess)
-//                }
-//
-//                is ApiResponse.Error -> {
-//                    _uiEvent.send(HomeScreenUiEvent.HomeFailure(response.error))
-//                }
-//
-//                else -> {
-//                    _uiEvent.send(
-//                        HomeScreenUiEvent.HomeFailure(
-//                            ApiError(code = "EXCEPTION", message = "Request failed")
-//                        )
-//                    )
-//                }
-//            }
-//        }
-//    }
+    }*/
 }

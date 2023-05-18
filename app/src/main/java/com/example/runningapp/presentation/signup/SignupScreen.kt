@@ -30,6 +30,7 @@ import androidx.navigation.NavHostController
 import com.example.runningapp.R
 import com.example.runningapp.domain.models.Validation
 import com.example.runningapp.presentation.Screen
+import com.example.runningapp.presentation.login.LoginScreenUiEvent
 import com.example.runningapp.ui.composables.PrimaryButton
 import com.example.runningapp.ui.composables.SecondaryButton
 import com.example.runningapp.ui.composables.ValidationSlot
@@ -64,7 +65,7 @@ fun SignupScreen(
 
                     is SignupScreenUiEvent.SignupFailure -> {
                         snackbarHostState.showSnackbar(
-                            message = "Email đã được sử dụng",
+                            message = event.error.message,
                             withDismissAction = true,
                             duration = SnackbarDuration.Short
                         )
