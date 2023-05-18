@@ -2,17 +2,22 @@ package com.example.runningapp.presentation
 
 import android.content.Context
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.runningapp.presentation.friend.FriendScreen
 import com.example.runningapp.presentation.friend.FriendViewModel
 import com.example.runningapp.presentation.home.HomeScreen
 import com.example.runningapp.presentation.intro.GetStarted
 import com.example.runningapp.presentation.intro.OnBoarding
 import com.example.runningapp.presentation.login.LoginScreen
+import com.example.runningapp.presentation.profile.ProfileScreen
+import com.example.runningapp.presentation.profile.ProfileViewModel
 import com.example.runningapp.presentation.running.RunningScreen
 import com.example.runningapp.presentation.running.RunningViewModel
 import com.example.runningapp.presentation.signup.SignupScreen
@@ -27,7 +32,7 @@ fun AppNavGraph(
     snackbarHostState: SnackbarHostState,
     runningViewModelFactory: RunningViewModel.Factory
 ) {
-    NavHost(navController = navController, startDestination = Screen.SignUp.route) {
+    NavHost(navController = navController, startDestination = Screen.Login.route) {
         composable(
             route = Screen.Login.route,
         ) {
@@ -118,8 +123,20 @@ fun AppNavGraph(
             FriendScreen(
                 viewModel = viewModel,
                 navController = navController,
-                onClick = { }
+                onClick = { friend ->
+                    navController.navigate(route = Screen.Profile.with(userId = friend._id.toHexString()))
+                }
             )
+        }
+        composable(
+            route = Screen.Profile.route,
+            arguments = listOf(navArgument("userId") { type = NavType.StringType })
+        ) {
+            val viewModel = hiltViewModel<ProfileViewModel>()
+            ProfileScreen(
+                navController = navController,
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() })
         }
     }
 }
