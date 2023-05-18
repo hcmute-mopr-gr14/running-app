@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -88,18 +89,19 @@ fun UserProfileScreen(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(10.dp))
-            uiState.let {
-                Button(onClick = {
+            Button(
+                onClick = {
                     launcher.launch(arrayOf("image/*"))
                     uiState.isUpdatingAvatar = true
-                }) {
-                    AsyncImage(
-                        model = uiState.imageUrl,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(150.dp)
-                    )
-                }
+                }, contentPadding = PaddingValues(0.dp)
+            ) {
+                AsyncImage(
+                    model = uiState.imageUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(150.dp)
+                        .clip(CircleShape)
+                )
             }
 //            Column(
 //                modifier = Modifier.padding(horizontal = 40.dp)
