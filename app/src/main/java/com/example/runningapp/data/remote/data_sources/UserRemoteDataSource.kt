@@ -21,4 +21,16 @@ class UserRemoteDataSource @Inject constructor(private val apiService: UserApiSe
             else -> null
         }
 
+    suspend fun fetchUser(id: ObjectId): User? =
+        when (val response = apiService.fetchUser(id.toHexString())) {
+            is ApiResponse.Data ->
+                User().apply {
+                    _id = ObjectId(response.data._id)
+                    nickname = response.data.nickname
+                    email = response.data.email
+                    imageUrl = response.data.imageUrl
+                }
+
+            else -> null
+        }
 }

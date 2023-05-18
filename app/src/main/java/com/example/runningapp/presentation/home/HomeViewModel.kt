@@ -1,10 +1,10 @@
 package com.example.runningapp.presentation.home
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.runningapp.data.models.Run
@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.mongodb.kbson.ObjectId
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -26,12 +27,6 @@ data class HomeScreenUiState(
     val runs: List<Run> = emptyList(),
     var showAllHistoryInfo: Boolean = false,
     var selectedIndex: Int = 0,
-    val bottomNavigationItems: List<ImageVector> = listOf(
-        Icons.Filled.Home,
-        Icons.Filled.Favorite,
-        Icons.Filled.Add,
-        Icons.Filled.Person
-    ),
     val lighterColor: Color = Color(123, 97, 255).copy(alpha = 0.8f),
     val radialGradientBrush: Brush = Brush.radialGradient(
         colors = listOf(lighterColor, lighterColor),
@@ -45,7 +40,8 @@ sealed class HomeScreenUiEvent() {
 }
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : ViewModel() {
+class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase, dataStore: DataStore<Preferences>) :
+    ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeScreenUiState())
     private val _uiEvent = Channel<HomeScreenUiEvent>()
@@ -71,6 +67,19 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
                 }
             }
         }
+        dataStore.data.onEach { preferences ->
+            val id = preferences[stringPreferencesKey("userId")] ?: return@onEach
+            homeUseCase.getUser(ObjectId(id)).collect { user ->
+                if (user != null) {
+                    _uiState.update {
+                        it.copy(
+                            nickname = user.nickname,
+                            imageUrl = user.imageUrl
+                        )
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun updateShowAllHistoryInfo(showAll: Boolean) {

@@ -3,13 +3,22 @@ package com.example.runningapp.presentation
 import android.content.Context
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.example.runningapp.presentation.friend.FriendScreen
+import com.example.runningapp.presentation.friend.FriendViewModel
+import com.example.runningapp.presentation.friendrequest.FriendRequestScreen
+import com.example.runningapp.presentation.friendrequest.FriendRequestViewModel
 import com.example.runningapp.presentation.home.HomeScreen
 import com.example.runningapp.presentation.intro.GetStarted
 import com.example.runningapp.presentation.intro.OnBoarding
 import com.example.runningapp.presentation.login.LoginScreen
+import com.example.runningapp.presentation.profile.ProfileScreen
+import com.example.runningapp.presentation.profile.ProfileViewModel
 import com.example.runningapp.presentation.running.RunningScreen
 import com.example.runningapp.presentation.running.RunningViewModel
 import com.example.runningapp.presentation.signup.SignupScreen
@@ -24,7 +33,7 @@ fun AppNavGraph(
     snackbarHostState: SnackbarHostState,
     runningViewModelFactory: RunningViewModel.Factory
 ) {
-    NavHost(navController = navController, startDestination = Screen.SignUp.route) {
+    NavHost(navController = navController, startDestination = Screen.Login.route) {
         composable(
             route = Screen.Login.route,
         ) {
@@ -48,11 +57,9 @@ fun AppNavGraph(
             route = Screen.Home.route,
         ) {
             HomeScreen(
+                navController = navController,
                 onNavigateToRunningScreen = {
                     navController.navigate(route = Screen.Running.route)
-                },
-                onNavigateToHome = {
-                    navController.navigate(route = Screen.Home.route)
                 },
                 onNavigateToUserProfileScreen = {
                     navController.navigate(route = Screen.UserProfile.route)
@@ -62,12 +69,7 @@ fun AppNavGraph(
             route = Screen.UserProfile.route,
         ) {
             UserProfileScreen(
-                onNavigateToHome = {
-                    navController.navigate(route = Screen.Home.route)
-                },
-                onNavigateToUserProfileScreen = {
-                    navController.navigate(route = Screen.UserProfile.route)
-                },
+                navController = navController,
                 onNavigateToEditUserProfileScreen = {
                     navController.navigate(route = Screen.EditUserProfile.route)
                 })
@@ -76,10 +78,8 @@ fun AppNavGraph(
             route = Screen.EditUserProfile.route,
         ) {
             EditUserProfileScreen(
-                snackbarHostState = snackbarHostState, navController = navController,
-                onNavigateToHome = {
-                    navController.navigate(route = Screen.Home.route)
-                },
+                snackbarHostState = snackbarHostState,
+                navController = navController,
                 onNavigateToUserProfileScreen = {
                     navController.navigate(route = Screen.UserProfile.route)
                 }
@@ -107,6 +107,46 @@ fun AppNavGraph(
                     navController.navigate(route = Screen.Home.route)
                 }
             )
+        }
+        composable(
+            route = Screen.Friend.route,
+        ) {
+            val viewModel = hiltViewModel<FriendViewModel>()
+            FriendScreen(
+                viewModel = viewModel,
+                snackbarHostState = snackbarHostState,
+                navController = navController,
+                onNavigateToProfileScreen = { userId ->
+                    navController.navigate(route = Screen.Profile.with(userId))
+                },
+                onNavigateToFriendRequestScreen = {
+                    navController.navigate(route = Screen.FriendRequest.route)
+                }
+            )
+        }
+        composable(
+            route = Screen.Profile.route,
+            arguments = listOf(navArgument("userId") { type = NavType.StringType })
+        ) {
+            val viewModel = hiltViewModel<ProfileViewModel>()
+            ProfileScreen(
+                navController = navController,
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() })
+        }
+        composable(
+            route = Screen.FriendRequest.route,
+        ) {
+            val viewModel = hiltViewModel<FriendRequestViewModel>()
+            FriendRequestScreen(
+                viewModel = viewModel,
+                navController = navController,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToProfileScreen = { userId ->
+                    navController.navigate(route = Screen.Profile.with(userId))
+                })
         }
     }
 }
