@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import com.example.runningapp.presentation.Screen
+import com.example.runningapp.ui.composables.MainNavigationBar
 import com.example.runningapp.ui.composables.PrimaryButton
 import com.example.runningapp.ui.composables.SecondaryButton
 import com.example.runningapp.ui.composables.ValidationSlot
@@ -27,7 +28,6 @@ import com.example.runningapp.ui.composables.ValidationSlot
 @Composable
 fun EditUserProfileScreen(
     navController: NavHostController,
-    onNavigateToHome: () -> Unit,
     onNavigateToUserProfileScreen: () -> Unit,
     snackbarHostState: SnackbarHostState,
     viewModel: UserProfileViewModel = hiltViewModel<UserProfileViewModel>()
@@ -62,38 +62,7 @@ fun EditUserProfileScreen(
 
     Scaffold(
         bottomBar = {
-            Box(
-                modifier = Modifier
-                    .height(60.dp)
-                    .padding(start = 40.dp, end = 40.dp, bottom = 10.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(brush = uiState.radialGradientBrush)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    uiState.bottomNavigationItems.forEachIndexed { index, icon ->
-                        IconButton(
-                            onClick = {
-                                uiState.selectedIndex = index
-                                when (index) {
-                                    0 -> onNavigateToHome()
-                                    3 -> onNavigateToUserProfileScreen()
-                                }
-                            },
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        ) {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = null,
-                                tint = if (uiState.selectedIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
-                    }
-                }
-            }
+            MainNavigationBar(navController = navController)
         }
     ) {
         Column(

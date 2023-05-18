@@ -2,7 +2,6 @@ package com.example.runningapp.presentation
 
 import android.content.Context
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -68,12 +67,7 @@ fun AppNavGraph(
             route = Screen.UserProfile.route,
         ) {
             UserProfileScreen(
-                onNavigateToHome = {
-                    navController.navigate(route = Screen.Home.route)
-                },
-                onNavigateToUserProfileScreen = {
-                    navController.navigate(route = Screen.UserProfile.route)
-                },
+                navController = navController,
                 onNavigateToEditUserProfileScreen = {
                     navController.navigate(route = Screen.EditUserProfile.route)
                 })
@@ -82,10 +76,8 @@ fun AppNavGraph(
             route = Screen.EditUserProfile.route,
         ) {
             EditUserProfileScreen(
-                snackbarHostState = snackbarHostState, navController = navController,
-                onNavigateToHome = {
-                    navController.navigate(route = Screen.Home.route)
-                },
+                snackbarHostState = snackbarHostState,
+                navController = navController,
                 onNavigateToUserProfileScreen = {
                     navController.navigate(route = Screen.UserProfile.route)
                 }

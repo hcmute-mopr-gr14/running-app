@@ -32,12 +32,6 @@ data class UserProfileScreenUiState(
     val imageUrl: String = "",
     var isUpdatingAvatar: Boolean = false,
     var selectedIndex: Int = 3,
-    val bottomNavigationItems: List<ImageVector> = listOf(
-        Icons.Filled.Home,
-        Icons.Filled.Favorite,
-        Icons.Filled.Add,
-        Icons.Filled.Person
-    ),
     val lighterColor: Color = Color(123, 97, 255).copy(alpha = 0.8f),
     val radialGradientBrush: Brush = Brush.radialGradient(
         colors = listOf(lighterColor, lighterColor),
