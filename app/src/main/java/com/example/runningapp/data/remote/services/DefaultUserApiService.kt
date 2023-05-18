@@ -81,6 +81,20 @@ class DefaultUserApiService @Inject constructor(
         }
     }
 
+    override suspend fun fetchUser(id: String): ApiResponse<UserResponseDataDTO> {
+        return withContext(dispatcher) {
+            try {
+                val dto: ApiResponseDTO<UserResponseDataDTO> = client.get("${ApiRoutes.USER}/$id").body()
+                dto.toApiResponse()
+            } catch (e: Exception) {
+                ApiResponse.Error(
+                    apiVersion = "--",
+                    error = ApiError(code = "EXCEPTION_ERROR", message = "Request failed")
+                )
+            }
+        }
+    }
+
     override suspend fun updateAvatar(imageBytes: ByteArray): ApiResponse<UserResponseDataDTO> {
         return withContext(dispatcher) {
             try {
