@@ -2,6 +2,9 @@ package com.example.runningapp.presentation.home
 
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.runningapp.data.models.Run
@@ -9,11 +12,9 @@ import com.example.runningapp.data.remote.dto.ApiError
 import com.example.runningapp.domain.use_cases.HomeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.mongodb.kbson.ObjectId
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -39,7 +40,8 @@ sealed class HomeScreenUiEvent() {
 }
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : ViewModel() {
+class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase, dataStore: DataStore<Preferences>) :
+    ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeScreenUiState())
     private val _uiEvent = Channel<HomeScreenUiEvent>()
@@ -65,6 +67,19 @@ class HomeViewModel @Inject constructor(private val homeUseCase: HomeUseCase) : 
                 }
             }
         }
+        dataStore.data.onEach { preferences ->
+            val id = preferences[stringPreferencesKey("userId")] ?: return@onEach
+            homeUseCase.getUser(ObjectId(id)).collect { user ->
+                if (user != null) {
+                    _uiState.update {
+                        it.copy(
+                            nickname = user.nickname,
+                            imageUrl = user.imageUrl
+                        )
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun updateShowAllHistoryInfo(showAll: Boolean) {
