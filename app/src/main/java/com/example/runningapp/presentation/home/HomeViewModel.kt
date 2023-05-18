@@ -1,10 +1,7 @@
 package com.example.runningapp.presentation.home
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.runningapp.data.models.Run
@@ -12,7 +9,10 @@ import com.example.runningapp.data.remote.dto.ApiError
 import com.example.runningapp.domain.use_cases.HomeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -26,12 +26,6 @@ data class HomeScreenUiState(
     val runs: List<Run> = emptyList(),
     var showAllHistoryInfo: Boolean = false,
     var selectedIndex: Int = 0,
-    val bottomNavigationItems: List<ImageVector> = listOf(
-        Icons.Filled.Home,
-        Icons.Filled.Favorite,
-        Icons.Filled.Add,
-        Icons.Filled.Person
-    ),
     val lighterColor: Color = Color(123, 97, 255).copy(alpha = 0.8f),
     val radialGradientBrush: Brush = Brush.radialGradient(
         colors = listOf(lighterColor, lighterColor),

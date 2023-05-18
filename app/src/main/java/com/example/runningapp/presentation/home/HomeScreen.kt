@@ -30,56 +30,24 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.runningapp.R
 import com.example.runningapp.domain.utils.metersToCalories
+import com.example.runningapp.ui.composables.MainNavigationBar
 import java.util.*
 import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
-    onNavigateToHome: () -> Unit,
+    navController: NavHostController,
     onNavigateToRunningScreen: () -> Unit,
     onNavigateToUserProfileScreen: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel<HomeViewModel>()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle(HomeScreenUiState())
     Scaffold(
-        bottomBar = {
-            Box(
-                modifier = Modifier
-                    .height(70.dp)
-                    .padding(horizontal = 40.dp, vertical = 10.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(brush = uiState.radialGradientBrush)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    uiState.bottomNavigationItems.forEachIndexed { index, icon ->
-                        IconButton(
-                            onClick = {
-                                uiState.selectedIndex = index
-                                when (index) {
-                                    0 -> onNavigateToHome()
-                                    3 -> onNavigateToUserProfileScreen()
-                                }
-                            },
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        ) {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = null,
-                                tint = if (uiState.selectedIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
-                    }
-                }
-            }
-        }
+        bottomBar = { MainNavigationBar(navController = navController) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             if (!uiState.showAllHistoryInfo) {

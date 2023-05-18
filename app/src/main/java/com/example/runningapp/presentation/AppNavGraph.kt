@@ -56,11 +56,9 @@ fun AppNavGraph(
             route = Screen.Home.route,
         ) {
             HomeScreen(
+                navController = navController,
                 onNavigateToRunningScreen = {
                     navController.navigate(route = Screen.Running.route)
-                },
-                onNavigateToHome = {
-                    navController.navigate(route = Screen.Home.route)
                 },
                 onNavigateToUserProfileScreen = {
                     navController.navigate(route = Screen.UserProfile.route)
