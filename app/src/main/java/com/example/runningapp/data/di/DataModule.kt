@@ -1,18 +1,9 @@
 package com.example.runningapp.data.di
 
-import com.example.runningapp.data.local.data_sources.UserLocalDataSource
 import com.example.runningapp.data.models.Run
 import com.example.runningapp.data.models.User
-import com.example.runningapp.data.remote.services.DefaultUserApiService
-import com.example.runningapp.data.remote.services.UserApiService
-import com.example.runningapp.data.remote.data_sources.UserRemoteDataSource
-import com.example.runningapp.data.remote.services.DefaultRunApiService
-import com.example.runningapp.data.remote.services.RunApiService
-import com.example.runningapp.data.repositories.DefaultRunRepository
-import com.example.runningapp.data.repositories.DefaultUserRepository
-import com.example.runningapp.data.repositories.RunRepository
-import com.example.runningapp.data.repositories.UserRepository
-import com.example.runningapp.di.IoDispatcher
+import com.example.runningapp.data.remote.services.*
+import com.example.runningapp.data.repositories.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,7 +21,6 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -93,9 +83,19 @@ internal object DataModule {
 
     @Provides
     @Singleton
+    fun provideFriendRepository(
+        friendRepository: DefaultFriendRepository
+    ): FriendRepository = friendRepository
+
+    @Provides
+    @Singleton
     fun provideUserApiService(userApiService: DefaultUserApiService): UserApiService = userApiService
 
     @Provides
     @Singleton
     fun provideRunApiService(runApiService: DefaultRunApiService): RunApiService = runApiService
+
+    @Provides
+    @Singleton
+    fun provideFriendApiService(friendApiService: DefaultFriendApiService): FriendApiService = friendApiService
 }
